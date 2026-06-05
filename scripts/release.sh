@@ -10,9 +10,12 @@
 #   scripts/release.sh version          # print the single-source version
 #   scripts/release.sh sync             # stamp every STAMP carrier from Cargo.toml
 #   scripts/release.sh check            # fail if any stale/stray version literal exists
-#   scripts/release.sh build            # cargo build --release
-#   scripts/release.sh tag              # git tag vX.Y.Z (annotated)
+#   scripts/release.sh build            # cargo build --release (local platform only)
+#   scripts/release.sh tag              # git tag vX.Y.Z (annotated) — triggers CI
 #   scripts/release.sh all              # sync + check + build + tag
+#
+# Cross-platform binaries (Linux x86_64/arm64, macOS x86_64/arm64, Windows x86_64)
+# are built by GitHub Actions on push of a v* tag. See .github/workflows/release.yml.
 # ---------------------------------------------------------------------------
 set -euo pipefail
 

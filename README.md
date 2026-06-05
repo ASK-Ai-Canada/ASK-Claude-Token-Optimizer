@@ -18,14 +18,14 @@
 <!-- static — stack + platform · for-the-badge = beveled rounded pills -->
 ![Rust](https://img.shields.io/badge/Rust-2021-6366F1?style=for-the-badge&labelColor=2B2F36&logo=rust&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-6366F1?style=for-the-badge&labelColor=2B2F36&logo=python&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Pi4-00896A?style=for-the-badge&labelColor=2B2F36)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20Pi4-00896A?style=for-the-badge&labelColor=2B2F36)
 ![Local](https://img.shields.io/badge/Runs-100%25%20Local%20%C2%B7%20Offline-00896A?style=for-the-badge&labelColor=2B2F36)
 ![License](https://img.shields.io/badge/License-Community%20%2F%20Commercial-00896A?style=for-the-badge&labelColor=2B2F36)
 
 <br/>
 
 [![Download](https://img.shields.io/badge/DOWNLOAD-LATEST%20RELEASE-C44D00?style=for-the-badge&labelColor=2B2F36)](https://github.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/releases/latest)&nbsp;
-[![Install Guide](https://img.shields.io/badge/INSTALL-GUIDE-6366F1?style=for-the-badge&labelColor=2B2F36)](#install--linux--windows--pi4)&nbsp;
+[![Install Guide](https://img.shields.io/badge/INSTALL-GUIDE-6366F1?style=for-the-badge&labelColor=2B2F36)](#install--linux--macos--windows--pi4)&nbsp;
 [![Performance](https://img.shields.io/badge/SEE-YOUR%20SAVINGS-00896A?style=for-the-badge&labelColor=2B2F36)](#performance--live-audit-data)&nbsp;
 [![Commercial](https://img.shields.io/badge/COMMERCIAL-LICENSE-C44D00?style=for-the-badge&labelColor=2B2F36)](mailto:licensing@ask-ai.ca)
 
@@ -113,7 +113,7 @@ A single codebase. Two licenses. The engine is identical in both tiers — nothi
 
 ---
 
-## Install — Linux / Windows / Pi4
+## Install — Linux / macOS / Windows / Pi4
 
 Download or clone the SDK, then from its directory:
 
@@ -135,9 +135,9 @@ Copies the binary to `%USERPROFILE%\.local\bin`, adds it to PATH, stages hooks. 
 
 ## Activate the hooks (one time)
 
-The optimizer only runs once the two hooks are wired into Claude Code. Edit `~/.claude/settings.json` (Linux / Windows / Pi4) or `%USERPROFILE%\.claude\settings.json` (Windows):
+The optimizer only runs once the two hooks are wired into Claude Code. Edit `~/.claude/settings.json` (Linux / macOS / Pi4) or `%USERPROFILE%\.claude\settings.json` (Windows):
 
-**Linux / Windows / Pi4:**
+**Linux / macOS / Pi4:**
 ```jsonc
 {
   "hooks": {
@@ -171,10 +171,12 @@ ask gain
 .
 ├── builds/
 │   ├── linux-x86_64/         ← pre-built binary, Linux x86_64
-│   ├── linux-arm64/          ← pre-built binary, Linux arm64
+│   ├── linux-arm64/          ← pre-built binary, Linux arm64 / Pi4
+│   ├── macos-x86_64/         ← pre-built binary, macOS Intel
+│   ├── macos-arm64/          ← pre-built binary, macOS Apple Silicon (M1/M2/M3)
 │   └── windows-x86_64/       ← pre-built binary, Windows x86_64 (.exe)
 ├── hooks/                    ← Claude Code hook templates (fork freely)
-├── setup.sh                  ← Linux / Windows / Pi4 installer
+├── setup.sh                  ← Linux / macOS / Pi4 installer
 ├── install.ps1               ← Windows installer
 ├── INSTALL-WINDOWS.md        ← full Windows guide
 ├── ask-token-optimizer.service   ← optional: run as a system service
@@ -207,8 +209,7 @@ Copy `.env.example` → `.env`. Everything defaults to local-only operation.
 
 | Key | Default | Purpose |
 |---|---|---|
-| `COMPRESS_THRESHOLD` | 500 chars | Minimum output size before compression engages |
-| `WEBHOOK_URL` | — | POST audit events to your own endpoint (fleet dashboards, compliance) |
+| `COMPRESS_THRESHOLD` | 2000 chars | Minimum output size before compression engages |
 | `INFERENCE_URL` | `127.0.0.1:8091` | Optional: your own local LLM endpoint for deep summarization |
 | `LISTEN_ADDR` | `127.0.0.1:8095` | Bind address when running in service mode |
 
@@ -223,7 +224,7 @@ No key ever points at Anthropic or any third-party service. Local by default. In
 ### Step 1 — Install
 
 ```bash
-# Linux / Windows / Pi4
+# Linux / macOS / Pi4
 ./setup.sh
 
 # Windows (PowerShell)
@@ -310,6 +311,7 @@ You should see token savings logged. A fresh install with no commands yet will s
 | Hooks not firing | Restart Claude Code after editing `settings.json` |
 | `ask gain` shows 0 | Run a few commands first — `git status`, `ls -la`, then check again |
 | Windows: `ask` not recognized | Open a new PowerShell window after the PATH change |
+| macOS: "cannot be opened because the developer cannot be verified" | Run once: `xattr -d com.apple.quarantine ~/.local/bin/ask-token-optimizer` |
 
 ---
 
@@ -349,7 +351,7 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 | **Version tracking** | Every row stamped with binary version | None |
 | **License** | Free under $100k · Commercial above | None |
 | **Install** | `./setup.sh` · hook auto-wire · PATH check | Manual |
-| **Platforms** | Linux · Windows · Pi4 | Linux x86_64 only |
+| **Platforms** | Linux · macOS · Windows · Pi4 | Linux x86_64 only |
 | **Your existing DB** | Fully compatible — drop-in replacement | — |
 
 ---

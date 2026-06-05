@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ASK-Token-Optimizer — Setup Script
 #
-# Installs the token optimizer + companion Claude Code hooks on Linux / Windows / Pi4.
+# Installs the token optimizer + companion Claude Code hooks on Linux / macOS / Pi4.
 # Windows: see INSTALL-WINDOWS.md (native PowerShell — no WSL needed).
 #
 # Usage (inside the unpacked SDK directory):
@@ -11,7 +11,7 @@
 #   REPO_URL=git@github.com:your-org/ASK-Token-Optimizer.git ./setup.sh
 #
 # What it does:
-#   1. Detects platform (Linux / Windows / Pi4)
+#   1. Detects platform (Linux / macOS / Pi4)
 #   2. Prefers the bundled pre-built binary in builds/<platform>/
 #      Falls back to cargo build --release if Rust is installed
 #   3. Installs the binary to $HOME/.local/bin/ask
@@ -27,7 +27,7 @@ BINARY_NAME="ask-token-optimizer"
 SHORT_ALIAS="ask"
 REPO_URL="${REPO_URL:-}"
 
-echo "=== ASK-Token-Optimizer Setup ==="
+echo "=== ASK Token Optimizer Setup ==="
 
 # ─── License acceptance (LICENSE §0: display + accept before install) ───────
 ACCEPT="${ASK_ACCEPT_LICENSE:-0}"
@@ -56,6 +56,8 @@ echo "Platform: ${OS} ${ARCH}"
 case "${OS}-${ARCH}" in
   Linux-x86_64)   PLATFORM_DIR="builds/linux-x86_64";   PLATFORM="linux-amd64" ;;
   Linux-aarch64)  PLATFORM_DIR="builds/linux-arm64";    PLATFORM="linux-arm64 (Pi4)" ;;
+  Darwin-x86_64)  PLATFORM_DIR="builds/macos-x86_64";   PLATFORM="macos-x86_64 (Intel)" ;;
+  Darwin-arm64)   PLATFORM_DIR="builds/macos-arm64";    PLATFORM="macos-arm64 (Apple Silicon)" ;;
   MINGW*|MSYS*)
     echo "Windows detected. Use INSTALL-WINDOWS.md for native PowerShell install."
     exit 1
