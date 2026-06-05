@@ -4,6 +4,10 @@
 
 # ASK Token Optimizer
 
+> ASK Token Optimizer is a **freemium** product from **ASK AI** — free for individuals and teams under USD $100k, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
+>
+> *— ASK-Ai Team Canada*
+
 **Stop paying for tokens Claude never needed to see.**
 
 *Proprietary binary · licensed under [Community / Commercial terms](LICENSE) · free under USD $100k annual revenue*
@@ -30,6 +34,20 @@
 [![Commercial](https://img.shields.io/badge/COMMERCIAL-LICENSE-C44D00?style=for-the-badge&labelColor=2B2F36)](mailto:licensing@ask-ai.ca)
 
 </div>
+
+---
+
+> ## 🤖 Living UX Install — your agent installs it, tailored to your machine
+>
+> Don't follow a static checklist. Point your AI coding agent (Claude Code, Cursor,
+> Cline, Continue) at **[README-LLM.md](README-LLM.md)** and it runs a *living*
+> install: it **audits your actual environment** — OS, CPU architecture, shell,
+> where your Claude config and `PATH` live — then executes a post-install flow
+> shaped to *your* system, wires the hooks (asking before it changes anything), and
+> verifies the result end-to-end. One adaptive flow that fits Linux, macOS, Windows,
+> or a Raspberry Pi — without you reading a single step.
+>
+> **→ Hand your agent [`README-LLM.md`](README-LLM.md). It takes it from there.**
 
 ---
 
@@ -130,6 +148,15 @@ Installs the binary, creates the `ask` shortcut, stages hook templates, and veri
 ```
 
 Copies the binary to `%USERPROFILE%\.local\bin`, adds it to PATH, stages hooks. Full guide: **[INSTALL-WINDOWS.md](INSTALL-WINDOWS.md)**.
+
+## Install — with an AI agent (Claude Code, Cursor, Cline)
+
+Paste this into your agent. It follows **[`README-LLM.md`](README-LLM.md)** — the
+machine-readable install contract — and installs + wires up the optimizer for you:
+
+```text
+Follow README-LLM.md in this repo to install and configure ASK Token Optimizer.
+```
 
 ---
 
@@ -239,7 +266,7 @@ The installer asks to wire the hooks for you. If you say yes, skip to Step 4.
 
 ```bash
 ask --version
-# should print: ask-token-optimizer 0.4.2
+# should print: ask-token-optimizer 0.4.3
 ```
 
 If `ask: command not found`, add to your shell profile:
