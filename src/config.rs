@@ -33,7 +33,7 @@ pub struct ServerConfig {
 impl Default for ServerConfig {
     fn default() -> Self {
         Self {
-            listen_addr: std::env::var("LISTEN_ADDR").unwrap_or_else(|_| "0.0.0.0:8095".into()),
+            listen_addr: std::env::var("LISTEN_ADDR").unwrap_or_else(|_| "127.0.0.1:8095".into()),
             inference_url: std::env::var("INFERENCE_URL").unwrap_or_else(|_| "http://127.0.0.1:8091".into()),
             inference_model: std::env::var("INFERENCE_MODEL").unwrap_or_else(|_| "Qwen3.5-9B-5.0bpw".into()),
             compress_threshold: std::env::var("COMPRESS_THRESHOLD").ok().and_then(|v| v.parse().ok()).unwrap_or(2000),

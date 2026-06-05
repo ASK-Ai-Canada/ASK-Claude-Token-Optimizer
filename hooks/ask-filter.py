@@ -3,10 +3,11 @@
 All processing in Python — zero shell escaping issues."""
 
 import json
+import os
 import subprocess
 import sys
 
-ASK = "/home/inzideai/.local/bin/ask"
+ASK = os.path.expanduser("~/.local/bin/ask")
 MIN_OUTPUT_LEN = 500  # Don't compress small outputs
 
 try:
