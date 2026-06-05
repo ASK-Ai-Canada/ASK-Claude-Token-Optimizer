@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1C21"/>
+      <stop offset="100%" stop-color="#141618"/>
+    </linearGradient>
+    <linearGradient id="barRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E74C3C"/>
+      <stop offset="100%" stop-color="#C0392B"/>
+    </linearGradient>
+    <linearGradient id="barGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2ECC71"/>
+      <stop offset="100%" stop-color="#27AE60"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C6A15B"/>
+      <stop offset="50%" stop-color="#F0D98A"/>
+      <stop offset="100%" stop-color="#C6A15B"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="420" fill="url(#bg)" rx="12"/>
+  <rect width="900" height="420" fill="none" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.2" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle"
+    font-family="Georgia, serif" font-size="15" font-weight="400" letter-spacing="3"
+    fill="#C6A15B" fill-opacity="0.85">LIVE TOKEN COMPRESSION</text>
+
+  <!-- ── SECTION LABELS ── -->
+  <text x="180" y="80" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0.5">WITHOUT OPTIMIZER</text>
+  <text x="720" y="80" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0.5">WITH OPTIMIZER</text>
+
+  <!-- ── COMMAND LABEL (center) ── -->
+  <rect x="355" y="100" width="190" height="34" rx="5"
+    fill="#2B2F36" stroke="#C6A15B" stroke-width="0.75" stroke-opacity="0.5"/>
+  <text x="450" y="122" text-anchor="middle"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
+    fill="#C6A15B">git status</text>
+
+  <!-- ── ARROWS ── -->
+  <!-- left arrow: command → raw -->
+  <line x1="355" y1="117" x2="290" y2="117" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.4"/>
+  <polygon points="290,113 278,117 290,121" fill="#C6A15B" fill-opacity="0.4"/>
+  <!-- right arrow: command → optimizer -->
+  <line x1="545" y1="117" x2="610" y2="117" stroke="#2ECC71" stroke-width="1" stroke-opacity="0.6"/>
+  <polygon points="610,113 622,117 610,121" fill="#2ECC71" fill-opacity="0.6"/>
+
+  <!-- ── LEFT SIDE: RAW BAR ── -->
+  <!-- Bar background -->
+  <rect x="100" y="150" width="160" height="180" rx="4"
+    fill="#1F2630" stroke="#E74C3C" stroke-width="1" stroke-opacity="0.3"/>
+  <!-- Bar fill — full height = 1200 tokens, animates in -->
+  <rect x="108" y="158" width="144" height="164" rx="2" fill="url(#barRed)">
+    <animate attributeName="height" from="0" to="164" dur="1.2s" begin="0.3s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+    <animate attributeName="y" from="322" to="158" dur="1.2s" begin="0.3s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+  </rect>
+  <!-- Token count -->
+  <text x="180" y="348" text-anchor="middle"
+    font-family="Georgia, serif" font-size="28" font-weight="400"
+    fill="#E74C3C" filter="url(#glow)">
+    1,200
+    <animate attributeName="fill-opacity" from="0" to="1" dur="0.4s" begin="1.2s" fill="freeze"/>
+  </text>
+  <text x="180" y="368" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0.5">TOKENS</text>
+
+  <!-- ── CENTER: OPTIMIZER BOX ── -->
+  <rect x="360" y="160" width="180" height="130" rx="6"
+    fill="#1F2630" stroke="url(#goldGrad)" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+  </rect>
+  <text x="450" y="198" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="3"
+    fill="#C6A15B" fill-opacity="0.7">ASK TOKEN OPTIMIZER</text>
+  <!-- animated processing dots -->
+  <circle cx="420" cy="230" r="5" fill="#C6A15B">
+    <animate attributeName="fill-opacity" values="0.2;1;0.2" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;6;3" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="450" cy="230" r="5" fill="#C6A15B">
+    <animate attributeName="fill-opacity" values="0.2;1;0.2" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;6;3" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="480" cy="230" r="5" fill="#C6A15B">
+    <animate attributeName="fill-opacity" values="0.2;1;0.2" dur="1.5s" begin="1s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;6;3" dur="1.5s" begin="1s" repeatCount="indefinite"/>
+  </circle>
+  <text x="450" y="272" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="1"
+    fill="#E8D7A8" fill-opacity="0.45">stripping noise · collapsing paths</text>
+
+  <!-- ── RIGHT SIDE: FILTERED BAR ── -->
+  <rect x="640" y="150" width="160" height="180" rx="4"
+    fill="#1F2630" stroke="#2ECC71" stroke-width="1" stroke-opacity="0.3"/>
+  <!-- Bar fill — 110/1200 = 9.2% of height = ~15px, animates in after 1.8s -->
+  <rect x="648" y="306" width="144" height="16" rx="2" fill="url(#barGreen)">
+    <animate attributeName="height" from="0" to="16" dur="0.6s" begin="1.8s" fill="freeze"/>
+    <animate attributeName="y" from="322" to="306" dur="0.6s" begin="1.8s" fill="freeze"/>
+  </rect>
+  <!-- Token count -->
+  <text x="720" y="348" text-anchor="middle"
+    font-family="Georgia, serif" font-size="28" font-weight="400"
+    fill="#2ECC71" filter="url(#glow)" fill-opacity="0">
+    110
+    <animate attributeName="fill-opacity" from="0" to="1" dur="0.4s" begin="2.2s" fill="freeze"/>
+  </text>
+  <text x="720" y="368" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0.5">TOKENS</text>
+
+  <!-- ── SAVINGS CALLOUT ── -->
+  <rect x="330" y="325" width="240" height="62" rx="6"
+    fill="#1A2A1A" stroke="#2ECC71" stroke-width="1" stroke-opacity="0">
+    <animate attributeName="stroke-opacity" from="0" to="0.6" dur="0.5s" begin="2.4s" fill="freeze"/>
+    <animate attributeName="fill-opacity" from="0" to="1" dur="0.5s" begin="2.4s" fill="freeze"/>
+  </rect>
+  <text x="450" y="349" text-anchor="middle"
+    font-family="Georgia, serif" font-size="22" font-weight="400"
+    fill="#2ECC71" filter="url(#softglow)" fill-opacity="0">
+    92% fewer tokens
+    <animate attributeName="fill-opacity" from="0" to="1" dur="0.5s" begin="2.5s" fill="freeze"/>
+  </text>
+  <text x="450" y="370" text-anchor="middle"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0">
+    SAME INFORMATION
+    <animate attributeName="fill-opacity" from="0" to="0.55" dur="0.5s" begin="2.7s" fill="freeze"/>
+  </text>
+
+  <!-- ── BOTTOM STATS ROW ── -->
+  <!-- grep -->
+  <text x="110" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">grep</text>
+  <text x="160" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#2ECC71">98.9%</text>
+  <!-- curl -->
+  <text x="230" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">curl</text>
+  <text x="265" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#2ECC71">95.7%</text>
+  <!-- find -->
+  <text x="340" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">find</text>
+  <text x="375" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#2ECC71">92.2%</text>
+  <!-- git push -->
+  <text x="440" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">git push</text>
+  <text x="510" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#2ECC71">92.8%</text>
+  <!-- ls -->
+  <text x="590" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">ls</text>
+  <text x="610" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#2ECC71">64.7%</text>
+  <!-- session -->
+  <text x="660" y="402" text-anchor="start"
+    font-family="'Courier New', monospace" font-size="10"
+    fill="#C6A15B" fill-opacity="0.6">session</text>
+  <text x="718" y="402" text-anchor="start"
+    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    fill="#C6A15B">87.7%</text>
+
+</svg>

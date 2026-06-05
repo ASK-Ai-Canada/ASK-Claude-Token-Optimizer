@@ -1,0 +1,14 @@
+[Unit]
+Description=ASK-Token-Optimizer — Semantic Compression Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ask-token-optimizer
+ExecStart=/opt/ask-token-optimizer/ask-token-optimizer
+EnvironmentFile=/opt/ask-token-optimizer/.env
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

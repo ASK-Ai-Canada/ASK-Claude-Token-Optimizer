@@ -1,0 +1,49 @@
+[package]
+name = "ask-token-optimizer"
+version = "0.4.2"
+edition = "2021"
+description = "ASK Token Optimizer — Unified CLI proxy + semantic compression for LLM token savings"
+
+[dependencies]
+# ATO Core
+clap = { version = "4", features = ["derive"] }
+anyhow = "1.0"
+ignore = "0.4"
+walkdir = "2"
+regex = "1"
+lazy_static = "1.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+colored = "2"
+dirs = "5"
+rusqlite = { version = "0.31", features = ["bundled"] }
+toml = "0.8"
+chrono = "0.4"
+thiserror = "1.0"
+tempfile = "3"
+sha2 = "0.10"
+flate2 = "1.0"
+quick-xml = "0.37"
+
+# ASK-TO layers
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+dotenvy = "0.15"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[[bin]]
+name = "ask"
+path = "src/main.rs"
+
+[build-dependencies]
+toml = "0.8"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
