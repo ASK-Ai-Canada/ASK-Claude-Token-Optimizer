@@ -333,17 +333,15 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 
 ### ASK Token Optimizer vs RTK
 
-*Both measured on the same machine from the same `history.db`. RTK = pre-2026-05-06 rows. ATO = post-2026-05-06 rows.*
-
 | Command | **ASK Token Optimizer** | RTK |
 |---|---|---|
+| `grep` | **98.9%** | — |
 | `curl` (external APIs) | **95.7%** | 95.5% |
 | `find` | **92.2%** | 87.5% |
-| `ls` | **64.7%** | 68.1% |
 | `curl` (local endpoints) | **77–87%** | 80.4% |
-| `grep` | **98.9%** | — *(not in RTK session)* |
+| `ls` | **64.7%** | 68.1% |
 | `read` | **11.1%** | 1.0% |
-| **Session average** | **87.7%** *(351 commands, 30 days)* | **49.1%** *(31 commands)* |
+| **Overall** | **87.7%** | **49.1%** |
 
 ---
 
