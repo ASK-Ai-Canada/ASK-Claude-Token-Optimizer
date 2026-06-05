@@ -336,7 +336,7 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 | | **ASK Token Optimizer** | **RTK** |
 |---|---|---|
 | `grep` | **98.9%** | 49.5% |
-| `curl` | **95.7%** | 95.5% |
+| `curl` (external) | **95.7%** | 95.5% |
 | `git push` | **92.8%** | — |
 | `cargo test` | **91.8%** | 91.8% |
 | `find` | **92.2%** | 78.3% |
@@ -344,6 +344,9 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 | `ls` | **64.7%** | 68.1% |
 | `read` | **11.1%** | 1.0% |
 | **Overall** | **87.7%** | **49.1%** |
+| **Audit** | `ask gain` · per-command savings · `--by-version` | None |
+| **Platforms** | Linux · Windows · Pi4 | Linux x86_64 only |
+| **License** | Free under $100k · Commercial above | None |
 
 ---
 
