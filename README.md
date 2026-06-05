@@ -351,25 +351,6 @@ Your existing RTK `history.db` is fully compatible — the DB schema is a strict
 
 ---
 
-### How it compares to other tools
-
-*Different tools solve different layers of the same problem. This table is factual — competitor figures are their own published claims.*
-
-| | **ASK Token Optimizer** | nadimtuhin/ claude-token-optimizer | Context pruning tools |
-|---|---|---|---|
-| **Layer** | Live command output (mid-session, every tool call) | Startup docs (session open, once) | Conversation history (context overflow) |
-| **When** | Every Bash execution | Once at start | On overflow |
-| **Compression** | **98.9% peak · 87.7% session · 56.2% steady-state** | 83–87% on startup docs *(their claim)* | Varies |
-| **Distribution** | Native binary — no npm, no package manager, no network at install | `npx` / `npm install -g` | Varies |
-| **Offline** | **Yes — 100% local, no API key** | Yes | Depends |
-| **Auditable** | Yes — `ask gain` shows your own numbers | No built-in audit | No |
-| **License** | Free under $100k / commercial above | MIT | Varies |
-| **Use together?** | ✅ | ✅ different layer | ✅ |
-
-**The honest take:** nadimtuhin's tool cuts what Claude loads before your session. ASK Token Optimizer cuts what Claude sees during your session. They solve different problems and stack cleanly. If you want maximum coverage, run both.
-
----
-
 ## Support
 
 Community support for the free tier. Commercial customers: SLA-backed support, include `ask --version` in any issue report. **licensing@ask-ai.ca**
