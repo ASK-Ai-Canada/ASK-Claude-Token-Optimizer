@@ -331,23 +331,19 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 
 ## How it compares
 
-### ASK Token Optimizer vs RTK (its predecessor)
+### ASK Token Optimizer vs RTK
 
-RTK (RustTokenKiller) was the original hook-based command-output compressor. ASK Token Optimizer is its successor — same architecture, rebuilt and extended. If you used RTK, here is what changed.
+*Both measured on the same machine from the same `history.db`. RTK = pre-2026-05-06 rows. ATO = post-2026-05-06 rows.*
 
-| | **RTK** | **ASK Token Optimizer** |
+| Command | **ASK Token Optimizer** | RTK |
 |---|---|---|
-| **Architecture** | PreToolUse hook, per-command filters | Same — forward-compatible, same `rtk_cmd` DB column |
-| **Compression** | Unmeasured (no audit) | **98.9% peak · 87.7% session · 56.2% steady-state** — measured from your own `history.db` |
-| **Audit trail** | None | `history.db` · per-command savings · `ask gain` · `--by-version` timeline |
-| **Version tracking** | None | `version` column in DB — every row stamped with the binary version that recorded it |
-| **Hook safety** | Flag-hijack bug (`--version` inside any `rewrite` payload corrupted the command) | **Fixed in v0.4.2** — flag parsing restricted to first arg only; hook validates output before substituting |
-| **Honest audit** | No inflation detection | §9 cap-based inflation check · steady-state vs headline · per-version epoch breakdown |
-| **License** | None | Dual: Community (free under $100k) / Commercial |
-| **Install** | Manual | `./setup.sh` · interactive hook auto-wire · PATH check |
-| **Platforms** | Linux x86_64 | Linux x86_64 · Linux arm64 (Pi4) · Windows x86_64 |
-
-Your existing RTK `history.db` is fully compatible — the DB schema is a strict superset. Installing ATO adds the `version` column automatically on first run without touching existing rows.
+| `curl` (external APIs) | **95.7%** | 95.5% |
+| `find` | **92.2%** | 87.5% |
+| `ls` | **64.7%** | 68.1% |
+| `curl` (local endpoints) | **77–87%** | 80.4% |
+| `grep` | **98.9%** | — *(not in RTK session)* |
+| `read` | **11.1%** | 1.0% |
+| **Session average** | **87.7%** *(351 commands, 30 days)* | **49.1%** *(31 commands)* |
 
 ---
 
