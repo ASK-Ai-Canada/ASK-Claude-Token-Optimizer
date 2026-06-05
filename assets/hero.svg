@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#1A1C21"/>
+      <stop offset="50%"  stop-color="#1F2630"/>
+      <stop offset="100%" stop-color="#141618"/>
+    </linearGradient>
+
+    <!-- Gold shimmer sweep — moves left to right -->
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#C6A15B" stop-opacity="0"/>
+      <stop offset="40%"  stop-color="#C6A15B" stop-opacity="0"/>
+      <stop offset="48%"  stop-color="#F0D98A" stop-opacity="1"/>
+      <stop offset="52%"  stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="58%"  stop-color="#E8D7A8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#C6A15B" stop-opacity="0"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        values="-1.2 0; 1.2 0" dur="3.2s" repeatCount="indefinite"/>
+    </linearGradient>
+
+    <!-- Mirror shimmer for subtitle — slower, offset timing -->
+    <linearGradient id="shimmer2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#C6A15B" stop-opacity="0"/>
+      <stop offset="42%"  stop-color="#C6A15B" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="#E8D7A8" stop-opacity="0.85"/>
+      <stop offset="58%"  stop-color="#C6A15B" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#C6A15B" stop-opacity="0"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+        values="-1.2 0; 1.2 0" dur="4.5s" begin="1.1s" repeatCount="indefinite"/>
+    </linearGradient>
+
+    <!-- Glow filter for gold lines -->
+    <filter id="glow" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Subtle text shadow -->
+    <filter id="shadow" x="-5%" y="-10%" width="110%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#C6A15B" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- Clip to SVG bounds -->
+    <clipPath id="clip"><rect width="1200" height="320"/></clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="320" fill="url(#bg)"/>
+
+  <!-- Subtle corner ornaments — top-left -->
+  <line x1="48" y1="28" x2="88" y2="28" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="48" y1="28" x2="48" y2="68" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <!-- top-right -->
+  <line x1="1152" y1="28" x2="1112" y2="28" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="1152" y1="28" x2="1152" y2="68" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <!-- bottom-left -->
+  <line x1="48" y1="292" x2="88" y2="292" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="48" y1="292" x2="48" y2="252" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <!-- bottom-right -->
+  <line x1="1152" y1="292" x2="1112" y2="292" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+  <line x1="1152" y1="292" x2="1152" y2="252" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.55"/>
+
+  <!-- Top rule line with glow -->
+  <line x1="88" y1="60" x2="1112" y2="60" stroke="#C6A15B" stroke-width="0.75" stroke-opacity="0.3" filter="url(#glow)"/>
+  <!-- Bottom rule line -->
+  <line x1="88" y1="260" x2="1112" y2="260" stroke="#C6A15B" stroke-width="0.75" stroke-opacity="0.3" filter="url(#glow)"/>
+
+  <!-- Eyebrow label -->
+  <text x="600" y="96" text-anchor="middle"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="10.5" font-weight="600" letter-spacing="5"
+    fill="#C6A15B" fill-opacity="0.7" text-transform="uppercase">
+    A S K - A i   ·   TOKEN COMPRESSION SDK
+  </text>
+
+  <!-- ── Main title — base gold layer -->
+  <text x="600" y="178" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="72" font-weight="400" letter-spacing="-1"
+    fill="#C6A15B" filter="url(#shadow)" clip-path="url(#clip)">
+    ASK Token Optimizer
+  </text>
+
+  <!-- ── Main title — shimmer overlay (clip keeps it inside) -->
+  <text x="600" y="178" text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="72" font-weight="400" letter-spacing="-1"
+    fill="url(#shimmer)" clip-path="url(#clip)">
+    ASK Token Optimizer
+  </text>
+
+  <!-- Divider dots -->
+  <text x="600" y="208" text-anchor="middle"
+    font-family="Georgia, serif" font-size="9"
+    fill="#C6A15B" fill-opacity="0.5" letter-spacing="12">
+    ◆ ◆ ◆
+  </text>
+
+  <!-- ── Subtitle — base -->
+  <text x="600" y="238" text-anchor="middle"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="15.5" font-weight="300" letter-spacing="2"
+    fill="#E8D7A8" fill-opacity="0.72" clip-path="url(#clip)">
+    Stop paying for tokens Claude never needed to see.
+  </text>
+
+  <!-- ── Subtitle — shimmer overlay -->
+  <text x="600" y="238" text-anchor="middle"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="15.5" font-weight="300" letter-spacing="2"
+    fill="url(#shimmer2)" clip-path="url(#clip)">
+    Stop paying for tokens Claude never needed to see.
+  </text>
+</svg>
