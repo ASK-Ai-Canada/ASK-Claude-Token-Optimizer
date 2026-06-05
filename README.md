@@ -333,12 +333,15 @@ Nothing leaves your machine. Compression is entirely local. The `history.db` sav
 
 ### ASK Token Optimizer vs RTK
 
-| Command | **ASK Token Optimizer** | RTK |
+| Command | **ASK Token Optimizer** | **RTK** |
 |---|---|---|
-| `grep` | **98.9%** | — |
-| `curl` (external APIs) | **95.7%** | 95.5% |
-| `find` | **92.2%** | 87.5% |
-| `curl` (local endpoints) | **77–87%** | 80.4% |
+| `grep` | **98.9%** | 49.5% |
+| `curl` (external) | **95.7%** | 95.5% |
+| `git push` | **92.8%** | — |
+| `cargo test` | **91.8%** | 91.8% |
+| `find` | **92.2%** | 78.3% |
+| `git status` | **80.8%** | 80.8% |
+| `curl` (local) | **80.4%** | 80.4% |
 | `ls` | **64.7%** | 68.1% |
 | `read` | **11.1%** | 1.0% |
 | **Overall** | **87.7%** | **49.1%** |
