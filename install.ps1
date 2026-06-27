@@ -43,37 +43,15 @@ function Tick([string]$msg) {
   Write-Host "     ${gold}✓${reset} $msg"
 }
 
-# ─── Locate binary: bundled SDK copy, else download from the GitHub Release ──
+# ─── Locate bundled binary ─────────────────────────────────────────────────
 $installDir = "$env:USERPROFILE\.local\bin"
 $hookDir    = "$env:USERPROFILE\.claude\hooks"
 $srcExe     = Join-Path (Get-Location) "builds\windows-x86_64\ask-token-optimizer.exe"
 
 if (-not (Test-Path $srcExe)) {
-  # Standalone install: pull the CI-published binary from GitHub Releases
-  # (latest, or pinned via $env:ATO_VERSION=vX.Y.Z) and verify its checksum.
-  $repo  = "ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
-  $ver   = if ($env:ATO_VERSION) { $env:ATO_VERSION } else { "latest" }
-  $asset = "ask-token-optimizer-windows-x86_64.exe"
-  $base  = if ($ver -eq "latest") { "https://github.com/$repo/releases/latest/download" }
-           else { "https://github.com/$repo/releases/download/$ver" }
-  $tmp   = Join-Path $env:TEMP "ask-token-optimizer.exe"
-  $shaF  = "$tmp.sha256"
-  Write-Host "     ${gold}↓${reset} Downloading binary ($ver) from GitHub Releases..."
-  try {
-    Invoke-WebRequest -Uri "$base/$asset" -OutFile $tmp -UseBasicParsing
-  } catch {
-    Write-Host "     ${gold}!${reset} Download failed: $base/$asset"; exit 1
-  }
-  try { Invoke-WebRequest -Uri "$base/$asset.sha256" -OutFile $shaF -UseBasicParsing } catch {}
-  if (Test-Path $shaF) {
-    $want = (((Get-Content $shaF -Raw) -split '\s+') | Where-Object { $_ })[0].Trim().ToLower()
-    $got  = (Get-FileHash $tmp -Algorithm SHA256).Hash.ToLower()
-    if ($want -and ($want -ne $got)) {
-      Write-Host "     ${gold}!${reset} Checksum mismatch — refusing to install (expected $want, got $got)."; exit 1
-    }
-    Write-Host "     ${gold}✓${reset} checksum verified"
-  }
-  $srcExe = $tmp
+  Write-Host "     ${gold}!${reset} Could not find $srcExe"
+  Write-Host "       Run this script from inside the unpacked SDK directory."
+  exit 1
 }
 
 # Version is read from the bundled binary — never hardcoded.

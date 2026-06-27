@@ -106,12 +106,7 @@ if [ "$TELEMETRY" = "off" ]; then
   fi
 fi
 
-# 6. binary fetch — from the GitHub Release (CI-published, checksum-verified) -------
-#    Single distribution channel: the pipeline builds on GitLab and publishes the
-#    binaries to the GitHub Release. The installer always pulls the latest release
-#    (or a pinned ATO_VERSION=vX.Y.Z), so clients can never get a stale build.
-RELEASE_REPO="ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
-ATO_VERSION="${ATO_VERSION:-latest}"   # pin with ATO_VERSION=v0.4.6 for reproducible installs
+# 6. binary fetch ------------------------------------------------------------------
 _os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 _arch="$(uname -m)"
 case "$_os-$_arch" in
@@ -125,7 +120,7 @@ case "$_os-$_arch" in
     if command -v cargo >/dev/null; then
       say "Building from source (Rust detected)..."
       cargo build --release --manifest-path "$SCRIPT_DIR/Cargo.toml" 2>/dev/null \
-        && install -m 0755 "$SCRIPT_DIR/target/release/ask" "$BIN_DIR/ask"
+        && install -m 0755 "$SCRIPT_DIR/target/release/ask-token-optimizer" "$BIN_DIR/ask"
     else
       err "Install Rust (rustup.rs) and re-run, or download a binary manually."; exit 1
     fi
@@ -134,35 +129,16 @@ case "$_os-$_arch" in
 esac
 
 if [ -n "$PLATFORM" ]; then
-  ASSET="ask-token-optimizer-$PLATFORM"
-  if [ "$ATO_VERSION" = "latest" ]; then
-    BASE="https://github.com/$RELEASE_REPO/releases/latest/download"
+  BINARY_URL="$GITHUB_RAW/builds/$PLATFORM/ask-token-optimizer"
+  say "Downloading binary ($PLATFORM)..."
+  if command -v curl >/dev/null; then
+    curl -fsSL -o "$BIN_DIR/ask" "$BINARY_URL"
+  elif command -v wget >/dev/null; then
+    wget -qO "$BIN_DIR/ask" "$BINARY_URL"
   else
-    BASE="https://github.com/$RELEASE_REPO/releases/download/$ATO_VERSION"
+    err "curl or wget required to download binary."; exit 1
   fi
-  TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
-  _dl(){ # url, out
-    if command -v curl >/dev/null; then curl -fsSL -o "$2" "$1"
-    elif command -v wget >/dev/null; then wget -qO "$2" "$1"
-    else err "curl or wget required to download binary."; exit 1; fi
-  }
-  say "Downloading binary ($PLATFORM, $ATO_VERSION) from GitHub Releases..."
-  _dl "$BASE/$ASSET" "$TMP/ask" || { err "Download failed: $BASE/$ASSET"; exit 1; }
-  _dl "$BASE/$ASSET.sha256" "$TMP/ask.sha256" || true
-
-  # integrity check — fail closed if a checksum is published for this asset
-  if [ -s "$TMP/ask.sha256" ]; then
-    WANT="$(awk '{print $1}' "$TMP/ask.sha256" | head -1)"
-    if   command -v sha256sum >/dev/null; then GOT="$(sha256sum "$TMP/ask" | awk '{print $1}')"
-    elif command -v shasum    >/dev/null; then GOT="$(shasum -a 256 "$TMP/ask" | awk '{print $1}')"
-    else GOT=""; fi
-    if [ -n "$GOT" ] && [ -n "$WANT" ] && [ "$GOT" != "$WANT" ]; then
-      err "Checksum mismatch — refusing to install (expected $WANT, got $GOT)."; exit 1
-    fi
-    [ -n "$GOT" ] && ok "checksum verified"
-  fi
-
-  install -m 0755 "$TMP/ask" "$BIN_DIR/ask"
+  chmod +x "$BIN_DIR/ask"
   # also expose as ask-token-optimizer for direct invocation
   ln -sf "$BIN_DIR/ask" "$BIN_DIR/ask-token-optimizer" 2>/dev/null || true
   ok "binary installed → $BIN_DIR/ask"
