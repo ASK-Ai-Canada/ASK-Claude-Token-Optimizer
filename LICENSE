@@ -1,0 +1,211 @@
+ASK TOKEN OPTIMIZER — DUAL LICENSE
+Community License (Revenue-Exempt) + Commercial License
+Version 1.1 · Effective 2026
+
+Copyright (c) 2026 ASK AI. All rights reserved.
+
+================================================================================
+0. ACCEPTANCE (READ BEFORE INSTALLING OR RUNNING)
+================================================================================
+This is a binding legal agreement between you (individually or the entity you
+represent, "You") and ASK AI ("Licensor") for the ASK Token Optimizer software,
+its binaries, source code, hooks, and documentation (the "Software").
+
+BY INSTALLING, COPYING, OR EXECUTING THE SOFTWARE — INCLUDING ITS FIRST
+EXECUTION — YOU ACKNOWLEDGE THAT YOU HAVE READ THIS LICENSE, UNDERSTAND IT, AND
+AGREE TO BE BOUND BY IT. IF YOU DO NOT AGREE, DO NOT INSTALL, COPY, OR RUN THE
+SOFTWARE.
+
+The installer and the Software's first run display this notice and require
+explicit acceptance, making this Agreement binding at the point of installation
+or first execution in every jurisdiction.
+
+================================================================================
+1. DEFINITIONS
+================================================================================
+"Entity" means any individual, company, partnership, government body, non-profit,
+or other organization, together with all of its Affiliates (any entity that
+controls, is controlled by, or is under common control with it). For purposes of
+the Revenue Threshold, all revenues of an Entity and all of its Affiliates are
+aggregated — revenues may not be divided across related entities to avoid the
+Commercial License obligation.
+
+"Annual Gross Revenue" means the total worldwide gross revenue, turnover, or
+receipts of an Entity (including all Affiliates) from all sources during the
+Entity's most recently completed fiscal year, expressed in United States Dollars
+(USD), calculated at invoice price before discounts, returns, or inter-company
+transfers, and inclusive of revenue from all products, services, and deployments
+in which the Software is used. For Entities with no revenue, Annual Gross Revenue
+is zero. Affiliated entities' revenues are aggregated and may not be split to
+remain below the Revenue Threshold.
+
+"Revenue Threshold" means USD $100,000 in Annual Gross Revenue.
+
+"Commercial Use" means any use of the Software by or for a for-profit Entity, or
+any use in connection with a product, service, or internal business operation,
+regardless of deployment method, whether the Software is run locally, internally,
+in a pipeline, in CI, on a developer's machine, or otherwise, and regardless of
+whether the Software is distributed or kept internal.
+
+"Community Use" means any use by an Entity whose Annual Gross Revenue is below
+the Revenue Threshold, and all non-commercial use (personal use, evaluation,
+education, academic research, and not-for-profit use).
+
+================================================================================
+2. COMMUNITY LICENSE (FREE — REVENUE-EXEMPT)
+================================================================================
+Subject to Sections 4–11, Licensor grants You a worldwide, royalty-free,
+non-exclusive, non-transferable, non-sublicensable license to install, run, and
+use the Software for Community Use, at no charge, for as long as You remain
+below the Revenue Threshold.
+
+This Community License covers:
+  (a) any individual using the Software personally;
+  (b) any Entity whose Annual Gross Revenue is below the Revenue Threshold; and
+  (c) evaluation, education, academic research, and not-for-profit use.
+
+No fee is owed while You qualify for the Community License.
+
+================================================================================
+3. COMMERCIAL LICENSE (REQUIRED AT OR ABOVE THE REVENUE THRESHOLD)
+================================================================================
+If an Entity's Annual Gross Revenue is at or above the Revenue Threshold and the
+Entity puts the Software to Commercial Use, that Entity MUST obtain a paid
+Commercial License from Licensor to install, run, or continue using the Software.
+
+3.1  SELF-REPORTING. An Entity that crosses the Revenue Threshold while using the
+     Software must notify Licensor and obtain a Commercial License within sixty
+     (60) days of the end of the fiscal year in which the Threshold was crossed.
+     Continued use after that cure period without a Commercial License is a
+     material breach and terminates all rights under this Agreement (Section 9).
+
+3.2  SCOPE. The Commercial License is licensed per Entity based on company size /
+     revenue. It is NOT charged per seat, per user, per token, per request, or
+     per unit of compute. One Entity-level license covers the Entity's permitted
+     internal use.
+
+3.3  ANNUAL REVENUE CERTIFICATION. Each Commercial Licensee must deliver to
+     Licensor, within thirty (30) days after the end of each fiscal year, a
+     written certification signed by an authorized officer stating the Entity's
+     Annual Gross Revenue for that year and confirming continued compliance with
+     this Agreement. Failure to deliver timely certification is a material breach.
+
+3.4  AUDIT RIGHTS. Licensor (or a designated independent auditor bound by
+     confidentiality) may, upon thirty (30) days' written notice and no more than
+     once per calendar year, audit the books and records of any Entity using the
+     Software to verify compliance with this Agreement, including but not limited
+     to Annual Gross Revenue calculations. If the audit reveals an underpayment or
+     unpaid Commercial License obligation exceeding ten percent (10%) of the
+     amount owed, the audited Entity shall bear the reasonable cost of the audit
+     in addition to the amounts owed. Audit records are kept confidential and used
+     solely to verify compliance.
+
+3.5  HOW TO OBTAIN. Contact Licensor at the address in Section 12 to obtain a
+     Commercial License and current pricing.
+
+================================================================================
+4. RESTRICTIONS (BOTH LICENSES)
+================================================================================
+You may NOT:
+  (a) sell, resell, rent, lease, host as a paid service, or sublicense the
+      Software itself as a competing product;
+  (b) remove, alter, or obscure any copyright, license, or attribution notice;
+  (c) use Licensor's names, logos, or trademarks except as permitted in Section 6;
+  (d) misrepresent Your Annual Gross Revenue to evade the Commercial License
+      obligation;
+  (e) divide revenues across Affiliated Entities or otherwise structure operations
+      to avoid the Revenue Threshold — revenues of all Affiliates are aggregated
+      per the definition in Section 1.
+
+Modification of the source for Your own permitted use, and forking the hook
+templates, are allowed under either license, subject to (a)–(e).
+
+================================================================================
+5. OWNERSHIP
+================================================================================
+The Software is licensed, not sold. Licensor retains all right, title, and
+interest in and to the Software, including all intellectual property rights.
+No rights are granted except as expressly stated in this Agreement.
+
+================================================================================
+6. TRADEMARKS
+================================================================================
+"ASK", "ASK AI", and "ASK Token Optimizer" are trademarks of Licensor. You may
+state factually that Your product or workflow "uses ASK Token Optimizer." You may
+not use the marks in a way that implies endorsement or that creates confusion as
+to source.
+
+================================================================================
+7. PRIVACY
+================================================================================
+The Software runs locally and offline. It does not collect, transmit, or process
+personal data on Licensor's behalf, except optional, user-configured webhook
+audit events that You control and direct to endpoints You operate.
+
+================================================================================
+8. DISCLAIMER OF WARRANTY
+================================================================================
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. YOU BEAR THE ENTIRE RISK AS TO
+QUALITY AND PERFORMANCE.
+
+Where applicable mandatory local law confers rights or warranties that cannot be
+excluded or limited by contract (including but not limited to consumer-protection
+or distance-selling regulations in the European Union or other jurisdictions),
+nothing in this Agreement restricts or excludes those statutory rights to the
+extent they cannot lawfully be waived. Outside of such mandatory statutory rights,
+this disclaimer applies in full.
+
+================================================================================
+9. LIMITATION OF LIABILITY
+================================================================================
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL LICENSOR BE
+LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES,
+OR FOR LOST PROFITS, REVENUE, OR DATA, ARISING OUT OF OR RELATED TO THE SOFTWARE.
+LICENSOR'S TOTAL AGGREGATE LIABILITY UNDER THIS AGREEMENT SHALL NOT EXCEED THE
+GREATER OF (a) THE FEES YOU PAID LICENSOR IN THE TWELVE MONTHS PRECEDING THE
+CLAIM, OR (b) USD $100.
+
+The remedies set out in this Agreement are cumulative and not exclusive of any
+other remedies available at law or in equity.
+
+================================================================================
+10. TERMINATION
+================================================================================
+This Agreement terminates automatically if You breach it and, for curable
+breaches, fail to cure within thirty (30) days of notice (or within the
+self-reporting cure period in Section 3.1). On termination You must stop using
+and destroy all copies of the Software. Sections 5, 8, 9, 11, and 12 survive
+termination.
+
+================================================================================
+11. GOVERNING LAW AND JURISDICTION
+================================================================================
+This Agreement is governed by the laws of the Province of New Brunswick and the
+federal laws of Canada applicable therein, without regard to conflict-of-laws
+rules. The courts located in New Brunswick, Canada have exclusive jurisdiction
+over any dispute arising out of or relating to this Agreement. The Software may
+be used worldwide under these same terms.
+
+================================================================================
+12. CONTACT
+================================================================================
+Commercial licensing and all notices:  licensing@ask-ai.ca
+Licensor:  ASK AI
+
+================================================================================
+SUMMARY (non-binding, for convenience only)
+================================================================================
+  • Free for individuals and for any company under USD $100k annual gross revenue.
+  • Companies at or above USD $100k annual gross revenue need a paid Commercial
+    License for any business use.
+  • Priced by company size — not per seat, token, request, or compute.
+  • Affiliated entities' revenues are aggregated — the threshold cannot be gamed
+    by splitting revenue across related companies.
+  • Commercial licensees must certify their revenue annually and are subject to
+    an annual audit right.
+  • One codebase. Local, offline, no data collection.
+  • The binding terms are Sections 0–12 above; this summary does not modify them.
+  • This is not legal advice. Have qualified counsel review before relying on
+    this license for material commercial obligations.
