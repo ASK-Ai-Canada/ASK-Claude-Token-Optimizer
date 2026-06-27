@@ -147,13 +147,13 @@ A single codebase. Two licenses. The engine is identical in both tiers — nothi
 
 ## Install — Linux / macOS / Windows / Pi4
 
-Download or clone the SDK, then from its directory:
+Download `setup.sh` (or clone this repo), then from that directory:
 
 ```bash
 ./setup.sh
 ```
 
-Installs the binary, creates the `ask` shortcut, stages hook templates, and verifies. If no pre-built binary matches your platform and Rust is installed, it builds from source automatically.
+Installs the binary (fetched from the latest GitHub Release, checksum-verified), creates the `ask` shortcut, stages hook templates, and verifies.
 
 ## Install — Windows (no WSL required)
 
@@ -165,7 +165,7 @@ Copies the binary to `%USERPROFILE%\.local\bin`, adds it to PATH, stages hooks. 
 
 ## Updating
 
-To update to the latest version, re-run the installer from a fresh copy of the SDK — it overwrites the existing binary in place and re-verifies:
+To update to the latest version, re-run the installer — it fetches the latest binary from the GitHub Release, overwrites the one on your PATH, and re-verifies:
 
 ```bash
 # Linux / macOS / Pi4
@@ -221,28 +221,6 @@ ask gain
 
 ---
 
-## SDK contents
-
-```
-.
-├── builds/
-│   ├── linux-x86_64/         ← pre-built binary, Linux x86_64
-│   ├── linux-arm64/          ← pre-built binary, Linux arm64 / Pi4
-│   ├── macos-x86_64/         ← pre-built binary, macOS Intel
-│   ├── macos-arm64/          ← pre-built binary, macOS Apple Silicon (M1/M2/M3)
-│   └── windows-x86_64/       ← pre-built binary, Windows x86_64 (.exe)
-├── hooks/                    ← Claude Code hook templates (fork freely)
-├── setup.sh                  ← Linux / macOS / Pi4 installer
-├── install.ps1               ← Windows installer
-├── INSTALL-WINDOWS.md        ← full Windows guide
-├── ask-token-optimizer.service   ← optional: run as a system service
-├── .env.example              ← optional configuration
-├── LICENSE
-└── README.md
-```
-
----
-
 ## CLI reference
 
 ```
@@ -275,7 +253,7 @@ No key ever points at Anthropic or any third-party service. Local by default. In
 
 ## Claude Code setup — copy-paste guide
 
-**Five steps, under two minutes.** Open a terminal in the SDK directory.
+**Five steps, under two minutes.** Open a terminal where you downloaded `setup.sh`.
 
 ### Step 1 — Install
 
@@ -295,7 +273,7 @@ The installer asks to wire the hooks for you. If you say yes, skip to Step 4.
 
 ```bash
 ask --version
-# should print: ask-token-optimizer 0.4.3
+# should print: ask-token-optimizer 0.4.6
 ```
 
 If `ask: command not found`, add to your shell profile:
@@ -423,3 +401,4 @@ Community support for the free tier. Commercial customers: SLA-backed support, i
 **ASK Token Optimizer** · by **ASK AI** · [LICENSE](LICENSE) · Free under CAD $100K · Commercial above
 
 </div>
+
