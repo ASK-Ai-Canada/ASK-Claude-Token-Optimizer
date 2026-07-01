@@ -2,7 +2,7 @@
 
 <img src="assets/hero.svg" alt="ASK Token Optimizer" width="100%"/>
 
-# ASK Token Optimizer
+# ATO
 
 > ATO is a **freemium** product from **ASK AI** — free for individuals and teams under CAD $100K, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
 >
@@ -29,25 +29,11 @@
 <br/>
 
 [![Download](https://img.shields.io/badge/DOWNLOAD-LATEST%20RELEASE-C44D00?style=for-the-badge&labelColor=2B2F36)](https://github.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/releases/latest)&nbsp;
-[![Install Guide](https://img.shields.io/badge/INSTALL-GUIDE-6366F1?style=for-the-badge&labelColor=2B2F36)](#install--linux--macos--windows--pi4)&nbsp;
+[![Install Guide](https://img.shields.io/badge/INSTALL-GUIDE-6366F1?style=for-the-badge&labelColor=2B2F36)](README-LLM-install-guide.md)&nbsp;
 [![Performance](https://img.shields.io/badge/SEE-YOUR%20SAVINGS-00896A?style=for-the-badge&labelColor=2B2F36)](#performance--live-audit-data)&nbsp;
 [![Commercial](https://img.shields.io/badge/COMMERCIAL-LICENSE-C44D00?style=for-the-badge&labelColor=2B2F36)](mailto:licensing@ask-ai.ca)
 
 </div>
-
----
-
-> ## 🤖 Living UX Install — your agent installs it, tailored to your machine
->
-> Don't follow a static checklist. Point your AI coding agent (Claude Code, Cursor,
-> Cline, Continue) at **[README-LLM.md](README-LLM.md)** and it runs a *living*
-> install: it **audits your actual environment** — OS, CPU architecture, shell,
-> where your Claude config and `PATH` live — then executes a post-install flow
-> shaped to *your* system, wires the hooks (asking before it changes anything), and
-> verifies the result end-to-end. One adaptive flow that fits Linux, macOS, Windows,
-> or a Raspberry Pi — without you reading a single step.
->
-> **→ Hand your agent [`README-LLM.md`](README-LLM.md). It takes it from there.**
 
 ---
 
@@ -78,6 +64,47 @@ No API key. No cloud. No account. The optimizer runs locally, processes output o
 
 ---
 
+## Licensing — free under $100K, commercial above
+
+A single codebase. Two licenses. The engine is identical in both tiers — nothing is locked or degraded in the free version.
+
+| | **Community** | **Commercial** |
+|---|---|---|
+| Who | Individuals + companies under **CAD $100K** annual revenue | Companies at or above **CAD $100K** for business use |
+| Cost | Free, forever | **CAD $25 / seat / year** · **first month free** · auto-renews yearly · valid card required |
+| Engine | Full, unlimited | Same engine |
+| Support | Community | SLA · priority fixes · dedicated contact · private channel |
+
+> Installing or running the software constitutes acceptance of the [LICENSE](LICENSE). Governing law: Canada. Commercial licensing: **licensing@ask-ai.ca**
+
+---
+
+## Getting started
+
+Download the latest release, then from that folder:
+
+```bash
+./setup.sh        # Linux · macOS · Pi4
+.\install.ps1     # Windows (PowerShell)
+```
+
+The installer fetches the checksum-verified binary, creates the `ask` shortcut, and offers to wire the two Claude Code hooks for you. Then:
+
+```bash
+ask --version
+ask audit          # your cumulative savings
+```
+
+**Prefer your agent to install it?** Hand Claude Code, Cursor, or Cline the machine-readable guide — it audits your environment and wires everything, asking before it changes anything:
+
+```text
+Follow README-LLM-install-guide.md in this repo to install and configure ASK Token Optimizer.
+```
+
+**Full install, hook wiring, updating, and troubleshooting → [README-LLM-install-guide.md](README-LLM-install-guide.md).**
+
+---
+
 ## Telemetry
 
 Anonymous savings stats, sent **weekly**. Private by design — only the totals you save. The free tier keeps it on (the exchange for free use); a commercial license can opt out.
@@ -86,7 +113,32 @@ Anonymous savings stats, sent **weekly**. Private by design — only the totals 
 |---|---|---|
 | Weekly rollup | Tokens saved · run count · OS · version | Everything else |
 
-Commercial license: opt out at install (default on), or any time with `DO_NOT_TRACK=1` (any tier) or `[telemetry] enabled = false` in `~/.config/ask/config.toml`.
+Opt out any time with `DO_NOT_TRACK=1` (any tier) or `[telemetry] enabled = false` in `~/.config/ask/config.toml`.
+
+---
+
+## Support
+
+Community support for the free tier. Commercial customers: SLA-backed support — include `ask --version` in any issue report. **licensing@ask-ai.ca**
+
+---
+
+## Hooks + audits
+
+Two hooks, both local, both fail-open — binary missing or crash → raw output passes through, session never breaks.
+
+- **PreToolUse → `ask-rewrite`** — intercepts Bash command pre-exec, routes high-output verbs (`grep` · `find` · `curl` · `cat`) through optimizer.
+- **PostToolUse → `ask-filter`** — strips output noise before context, structure intact, token count cut.
+
+Installer wires both into `settings.json`. No daemon, no network, no API key. Disable = drop hook block, re-run installer to restore.
+
+**Audit trail** — every optimized run logged local at `~/.local/share/ask/history.db`, each row version-stamped:
+
+- `ask audit` → cumulative savings since install
+- `ask audit --graph` → daily trend
+- `ask audit --by-version` → savings per release, upgrade-over-upgrade
+
+Ledger is yours — on-disk, SQLite-readable, never leaves machine.
 
 ---
 
@@ -94,11 +146,7 @@ Commercial license: opt out at install (default on), or any time with `DO_NOT_TR
 
 <img src="assets/compression-demo.svg" alt="Per command savings" width="100%"/>
 
-*Measured on a real Claude Code session: 351 commands over 30 days. Source: `ask gain`.*
-
-### Maximum savings — by command type
-
-*Figures are averages across all runs of that command type in a 30-day session. See [honest audit](#why-we-show-you-the-honest-number-too) below for steady-state numbers.*
+*Measured on a real Claude Code session: 351 commands over 30 days. Source: `ask audit`.*
 
 | Command type | Tokens saved |
 |---|---|
@@ -113,293 +161,24 @@ Commercial license: opt out at install (default on), or any time with `DO_NOT_TR
 
 > 340,000 input tokens compressed to 41,800 delivered to Claude.
 
-### Why we show you the honest number too
+### The honest number
 
-The 87.7% session figure is real. But one command — a single grep run — produced 250,000 tokens of output and accounts for 93% of all savings in that figure. Remove that one outlier and measure the remaining 335 commands in steady-state:
+The 87.7% session figure is real — but one command, a single grep run, produced 250,000 tokens and accounts for 93% of it. Remove that outlier and measure the remaining 335 commands in steady-state:
 
 | | Headline (raw) | Steady-state |
 |---|---|---|
 | Commands | 351 | 335 |
 | Compression | **87.7%** | **56.2%** |
-| Tokens in | 340K | 70.5K |
 | Tokens saved | 298.5K | 39.6K |
 
-**What this tells you:** ASK Token Optimizer is highly effective on high-volume output (grep, curl, build logs, large diffs) — those are the commands burning most of your budget anyway. On short-output commands (git status, quick reads) it compresses less. Your own workload will land somewhere between these two figures. Run `ask gain` after a day of use to see your real number.
+ATO is most effective on high-volume output — grep, curl, build logs, large diffs — the commands burning most of your budget. On short-output commands it compresses less. Your workload lands somewhere between. Run `ask audit` after a day of use to see your real number.
 
 We show both because you deserve to know what you're actually buying.
 
 ---
 
-## Licensing — free under $100k, commercial above
-
-A single codebase. Two licenses. The engine is identical in both tiers — nothing is locked or degraded in the free version.
-
-| | **Community** | **Commercial** |
-|---|---|---|
-| Who | Individuals + companies under **CAD $100K** annual revenue | Companies at or above **CAD $100K** for business use |
-| Cost | Free, forever | **CAD $25 / seat / year** · **first month free** · auto-renews yearly · valid card required |
-| Engine | Full, unlimited | Same engine |
-| Support | Community | SLA · priority fixes · dedicated contact · private channel |
-| Additional rights | — | Internal redistribution · version pinning · security docs *(roadmap)* |
-
-> Installing or running the software constitutes acceptance of the [LICENSE](LICENSE). Governing law: Canada. Commercial licensing: **licensing@ask-ai.ca**
-
----
-
-## Install — Linux / macOS / Windows / Pi4
-
-Download `setup.sh` (or clone this repo), then from that directory:
-
-```bash
-./setup.sh
-```
-
-Installs the binary (fetched from the latest GitHub Release, checksum-verified), creates the `ask` shortcut, stages hook templates, and verifies.
-
-## Install — Windows (no WSL required)
-
-```powershell
-.\install.ps1
-```
-
-Copies the binary to `%USERPROFILE%\.local\bin`, adds it to PATH, stages hooks. Full guide: **[INSTALL-WINDOWS.md](INSTALL-WINDOWS.md)**.
-
-## Updating
-
-To update to the latest version, re-run the installer — it fetches the latest binary from the GitHub Release, overwrites the one on your PATH, and re-verifies:
-
-```bash
-# Linux / macOS / Pi4
-./setup.sh
-```
-```powershell
-# Windows
-.\install.ps1
-```
-
-Or download the newest binary from the [latest release](https://github.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/releases/latest) and replace the one on your PATH. Check your version any time with `ask --version`.
-
-## Install — with an AI agent (Claude Code, Cursor, Cline)
-
-Paste this into your agent. It follows **[`README-LLM.md`](README-LLM.md)** — the
-machine-readable install contract — and installs + wires up the optimizer for you:
-
-```text
-Follow README-LLM.md in this repo to install and configure ASK Token Optimizer.
-```
-
----
-
-## Activate the hooks (one time)
-
-The optimizer only runs once the two hooks are wired into Claude Code. Edit `~/.claude/settings.json` (Linux / macOS / Pi4) or `%USERPROFILE%\.claude\settings.json` (Windows):
-
-**Linux / macOS / Pi4:**
-```jsonc
-{
-  "hooks": {
-    "PreToolUse":  [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "$HOME/.claude/hooks/ask-rewrite.sh" } ] } ],
-    "PostToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "$HOME/.claude/hooks/ask-filter.sh" } ] } ]
-  }
-}
-```
-
-**Windows:**
-```jsonc
-{
-  "hooks": {
-    "PreToolUse":  [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "python %USERPROFILE%\\.claude\\hooks\\ask-rewrite.py" } ] } ],
-    "PostToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "python %USERPROFILE%\\.claude\\hooks\\ask-filter.py" } ] } ]
-  }
-}
-```
-
-Restart Claude Code, then confirm it's working:
-
-```bash
-ask gain
-```
-
----
-
-## CLI reference
-
-```
-ask --version          Version info
-ask gain               Your cumulative savings since install
-ask gain --graph       Daily savings trend
-ask <command> <args>   Run any supported command through the optimizer
-ask --hook             Compression endpoint used by the hooks
-ask rewrite <cmd>      Preview how a command would be rewritten
-ask serve --port N     Optional HTTP service mode (POST /v1/compress/output)
-```
-
-Supported commands: `git · ls · tree · grep · find · cargo · npm · pnpm · aws · psql · gh · read · diff · json · deps · env` — and more. Run `ask --help` for the full list.
-
----
-
-## Configuration (optional)
-
-Copy `.env.example` → `.env`. Everything defaults to local-only operation.
-
-| Key | Default | Purpose |
-|---|---|---|
-| `COMPRESS_THRESHOLD` | 2000 chars | Minimum output size before compression engages |
-| `INFERENCE_URL` | `127.0.0.1:8091` | Optional: your own local LLM endpoint for deep summarization |
-| `LISTEN_ADDR` | `127.0.0.1:8095` | Bind address when running in service mode |
-
-No key ever points at Anthropic or any third-party service. Local by default. Inference is opt-in and runs wherever you point it.
-
----
-
-## Claude Code setup — copy-paste guide
-
-**Five steps, under two minutes.** Open a terminal where you downloaded `setup.sh`.
-
-### Step 1 — Install
-
-```bash
-# Linux / macOS / Pi4
-./setup.sh
-
-# Windows (PowerShell)
-.\install.ps1
-```
-
-The installer asks to wire the hooks for you. If you say yes, skip to Step 4.
-
----
-
-### Step 2 — Verify the binary is on PATH
-
-```bash
-ask --version
-# should print: ask-token-optimizer 0.4.6
-```
-
-If `ask: command not found`, add to your shell profile:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
----
-
-### Step 3 — Wire the hooks
-
-Open (or create) `~/.claude/settings.json` and add the `hooks` block:
-
-```jsonc
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          { "type": "command", "command": "$HOME/.claude/hooks/ask-rewrite.sh" }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          { "type": "command", "command": "$HOME/.claude/hooks/ask-filter.sh" }
-        ]
-      }
-    ]
-  }
-}
-```
-
-**Windows** — replace the two `command` values with:
-```
-"python %USERPROFILE%\\.claude\\hooks\\ask-rewrite.py"
-"python %USERPROFILE%\\.claude\\hooks\\ask-filter.py"
-```
-
----
-
-### Step 4 — Restart Claude Code
-
-Close and reopen Claude Code (or reload the window). The hooks activate on restart.
-
----
-
-### Step 5 — Confirm it's working
-
-Run a few commands inside a Claude Code session, then:
-
-```bash
-ask gain
-```
-
-You should see token savings logged. A fresh install with no commands yet will show 0 — that's normal.
-
----
-
-## Troubleshooting
-
-| Symptom | Fix |
-|---|---|
-| `ask: command not found` | `~/.local/bin` not on PATH — run `export PATH="$HOME/.local/bin:$PATH"` or restart your shell |
-| Hooks not firing | Restart Claude Code after editing `settings.json` |
-| `ask gain` shows 0 | Run a few commands first — `git status`, `ls -la`, then check again |
-| Windows: `ask` not recognized | Open a new PowerShell window after the PATH change |
-| macOS: "cannot be opened because the developer cannot be verified" | Run once: `xattr -d com.apple.quarantine ~/.local/bin/ask-token-optimizer` |
-
----
-
-## FAQ
-
-**Is it safe to install?**
-Yes. The optimizer only intercepts Bash tool output inside Claude Code. It does not touch your files, credentials, or environment. The hooks degrade safely — if the binary is missing or crashes, output passes through to Claude untouched.
-
-**Does it change what Claude does?**
-No. Claude receives the same factual content, in fewer tokens. Filtered output is structurally accurate — noise and repetition are removed, not meaning.
-
-**Will it break my workflow?**
-Unsupported commands pass through unchanged. If a command's output looks wrong after filtering, run `ask rewrite <cmd>` to preview the transformation, or add it to the exclusion list in `.env`.
-
-**What happens to my data?**
-Nothing leaves your machine. Compression is entirely local. The `history.db` savings ledger lives at `~/.local/share/ask/history.db` — readable with any SQLite viewer.
-
----
-
-## How it compares
-
-### ASK Token Optimizer vs RTK
-
-| | **ASK Token Optimizer** | **RTK** |
-|---|---|---|
-| `grep` | **98.9%** | 49.5% |
-| `curl` (external APIs) | **95.7%** | 95.5% |
-| `git push` | **92.8%** | — |
-| `cargo test` | **91.8%** | 91.8% |
-| `find` | **92.2%** | 78.3% |
-| `git status` | **80.8%** | 80.8% |
-| `ls` | **64.7%** | 68.1% |
-| `read` | **11.1%** | 1.0% |
-| **Overall** | **87.7%** | **49.1%** |
-| **Compression detail** | **98.9% peak · 87.7% session · 56.2% steady-state** | 60–90% range claimed |
-| **Audit** | `ask gain` · per-command · `--by-version` timeline | None |
-| **Version tracking** | Every row stamped with binary version | None |
-| **License** | Free under CAD $100K · Commercial above | None |
-| **Install** | `./setup.sh` · hook auto-wire · PATH check | Manual |
-| **Platforms** | Linux · macOS · Windows · Pi4 | Linux x86_64 only |
-| **Your existing DB** | Fully compatible — drop-in replacement | — |
-
----
-
-## Support
-
-Community support for the free tier. Commercial customers: SLA-backed support, include `ask --version` in any issue report. **licensing@ask-ai.ca**
-
----
-
 <div align="center">
 
-**ASK Token Optimizer** · by **ASK AI** · [LICENSE](LICENSE) · Free under CAD $100K · Commercial above
+**ATO** · by **ASK AI** · [LICENSE](LICENSE) · Free under CAD $100K · Commercial above
 
 </div>
-
