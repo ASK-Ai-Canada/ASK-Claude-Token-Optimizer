@@ -170,7 +170,7 @@ Write-Host "   ${gold}─── You are set up ───────────
 Write-Host ""
 Write-Host "   1.  ${charcoal}Open a new PowerShell window${reset}  (so PATH refreshes)"
 Write-Host "   2.  ${charcoal}Restart Claude Code${reset}"
-Write-Host "   3.  Run  ${gold}ask gain${reset}  after a few commands to see your savings"
+Write-Host "   3.  Run  ${gold}ask audit${reset}  after a few commands to see your savings"
 Write-Host ""
 Write-Host "   ${dim}Docs:${reset}  README.md  ·  INSTALL-WINDOWS.md"
 Write-Host ""

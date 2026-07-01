@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""ASK-TO PreToolUse hook — rewrites commands to use ASK filters.
-Based on RTK's proven hookSpecificOutput format (60-90% savings).
+"""ASK Token Optimizer PreToolUse hook — rewrites commands to run through the ASK filters.
+Emits Claude Code's hookSpecificOutput envelope so the rewritten command runs in place (60-90% token savings).
 """
 import json, sys, subprocess, os
 
@@ -11,7 +11,7 @@ try:
 except:
     sys.exit(0)
 
-# Claude Code sends tool_input.command (RTK/older) or input.command (newer)
+# Claude Code sends tool_input.command (older) or input.command (newer)
 cmd = None
 input_key = None
 if "tool_input" in data:
@@ -55,7 +55,7 @@ if rewritten == cmd:
 if not rewritten.startswith("ask "):
     sys.exit(0)
 
-# Build hookSpecificOutput (RTK proven format)
+# Build the hookSpecificOutput envelope
 updated_input = dict(data[input_key])
 updated_input["command"] = rewritten
 

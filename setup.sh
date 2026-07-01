@@ -198,4 +198,4 @@ if [ "$OS" = "Darwin" ]; then
 fi
 
 say ""
-ok "Done.  Run: ask --version · ask gain · ask telemetry"
+ok "Done.  Run: ask --version · ask audit · ask telemetry"
