@@ -4,7 +4,7 @@
 
 # ATO
 
-> ATO is a **freemium** product from **ASK AI** — free for individuals and teams under CAD $100K, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
+> ATO is a **freemium** product from **ASK-Ai** — free for individuals and teams under CAD $100K, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
 >
 > *— ASK-Ai Team Canada*
 
@@ -179,6 +179,6 @@ We show both because you deserve to know what you're actually buying.
 
 <div align="center">
 
-**ATO** · by **ASK AI** · [LICENSE](LICENSE) · Free under CAD $100K · Commercial above
+**ATO** · by **ASK-Ai** · [LICENSE](LICENSE) · Free under CAD $100K · Commercial above
 
 </div>
