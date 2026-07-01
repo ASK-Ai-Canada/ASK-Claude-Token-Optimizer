@@ -4,7 +4,7 @@
 
 # ASK Token Optimizer
 
-> ASK Token Optimizer is a **freemium** product from **ASK AI** — free for individuals and teams under CAD $100K, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
+> ATO is a **freemium** product from **ASK AI** — free for individuals and teams under CAD $100K, commercially licensed above. Proceeds from enterprise licensing go toward raising technology literacy in local communities and paying independent developers through our bounty program. Every commercial seat helps fund someone else's first commit.
 >
 > *— ASK-Ai Team Canada*
 
@@ -106,6 +106,7 @@ Commercial license: opt out at install (default on), or any time with `DO_NOT_TR
 | `curl` (external API responses) | **95.7%** |
 | `git push` | **92.8%** |
 | `find` | **92.2%** |
+| `cat` / `read` (large logs, `.jsonl`, build output) | **84%** — new in 0.5.0, lossless (full file stays on disk, one command away) |
 | `curl` (local service responses) | **77–87%** |
 | `ls` | **64.7%** |
 | **Session total — 30 days, 351 commands** | **87.7%** |

@@ -1,36 +1,35 @@
 # Changelog
 
-All notable changes to ASK Token Optimizer. Dates UTC.
+What's improved, version by version. Check the version you're on with `ask --version`, then read up from there to see everything that's changed since. Newest first.
 
+---
 
-## [0.4.6] — 2026-06-26
-### Added
-- **Weekly telemetry sender** — lean, opportunistic, **no timer/daemon**. Piggybacks the per-command hook: once ≥7 days since the last send it stamps `~/.ask/.telemetry_sent` and spawns a detached child that POSTs only anonymous totals (tokens saved · run count · OS · version). Honors `DO_NOT_TRACK`, `[telemetry] enabled = false`, and per-install opt-out.
-- **Install-time telemetry consent.** Free/community tier keeps telemetry on (the exchange for free use); commercial license is **opt-out, default on**, persisted to `~/.config/ask/config.toml`. Positive framing — "private by design: only the totals you save."
-- **Commercial = real subscription.** First month **free**, then **CAD $25 / seat / year, auto-renewing**; a **valid card is required** at signup (captured up front, $0 for 30 days, first charge at day 30, recurs yearly). Pay by card (USD/CAD) or BTC; receipt, activation, and a "billed tomorrow" reminder are sent by email.
-### Changed
-- Built + published entirely via our automated CI/CD pipeline (all 5 platforms incl. macOS arm64/x86_64).
+## 0.5.0 — 2026-07-01
 
-## [0.4.5] — 2026-06-24
-### Fixed
-- **npm `install` / `ci` / `i` now optimized** (#5). The rewrite matcher was `^npm (run|exec)`, so the highest-output npm commands (`npm install`, `npm ci`) slipped past unoptimized while `npm run build` was handled. Extended to `(run|exec|install|ci|i|update|audit)`. Reported by @Offbeatmammal.
-### Added
-- **Commercial subscription: CAD $25 / seat / year** — licensing table + install-time capture (company + seats) in `setup.sh`; plan `seat-25-yearly`.
-- **"Updating" section** in the README (answers "how do we update?", #6) — re-run `setup.sh` / `install.ps1`, or grab the latest release; `ask --version`.
-### Notes
-- Enterprise installs + activates without hard-block (honor-system + auto invoice).
-- README + setup.sh changes are already live on `main`; the binary release ships with this version.
+- **New: `ask update`.** One command pulls the latest release (checksum-verified) and installs it. It also compares the release's hooks against yours and **asks before changing anything** — nothing is ever wired behind your back.
+- **Large files are handled losslessly now.** `cat` / `read` on a huge log or data dump (`.jsonl`, build output) returns a head-and-tail summary that names the full file on disk, so nothing is lost — while **source code passes through byte-for-byte, never trimmed.** Around **84% less context** on big files.
+- `ask gain` is now **`ask audit`** (same flags: `--graph`, `--by-version`, `--project`). Command surface tidied up.
 
-## [0.4.4] — 2026-06-20
-### Added
-- Welcome email across all tiers; `api.ask-ai.ca` registration endpoint live.
-- CAD pricing; per-command savings SVG in the README.
-### Changed
-- Docs/infra release (binaries carried from 0.4.3).
+## 0.4.6 — 2026-06-26
 
-## [0.4.3] — 2026-06-20
-### Added
-- First public binary release: linux x86_64/arm64, macOS x86_64/arm64, windows x86_64.
+- **Restored optimization on common flag forms** — `grep -E`, `grep -i`, `grep -r`, and similar — that an earlier build had begun passing through unfiltered. **If your savings dipped on 0.4.3–0.4.5, upgrading brings them back.**
+- Now built and shipped through a full CI pipeline for all five targets: Linux x86_64/arm64, macOS x86_64/arm64, Windows x86_64.
+- Lean, opt-out weekly telemetry — anonymous **totals only**, never your commands or their output.
 
-## [0.4.2] — prior
-- Baseline public release.
+## 0.4.5 — 2026-06-25
+
+- **Wider coverage:** `npm install` / `ci` / `i` and siblings are now optimized — previously the highest-output npm commands slipped through unfiltered.
+- Added an in-README "Updating" guide.
+
+## 0.4.4 — 2026-06-20
+
+- Registration + welcome flow, and CAD pricing.
+- Added the per-command savings chart to the README so you can see exactly where the tokens go.
+
+## 0.4.3 — 2026-06-20
+
+- **First prebuilt binary release** — Linux x86_64/arm64, macOS x86_64/arm64, Windows x86_64. Download and run; no build step.
+
+## 0.4.2 — 2026-06-05
+
+- First public release. The core: catch high-output commands, filter the noise before it reaches your model, and log every saving locally so you can audit your own numbers.

@@ -129,16 +129,16 @@
     font-family="Georgia, serif" font-size="14" font-weight="400" letter-spacing="3"
     fill="#C6A15B" fill-opacity="0.9">PER COMMAND SAVINGS</text>
   <text x="450" y="455" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="1"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="1"
     fill="#E8D7A8" fill-opacity="0.38">real measurements · source: ask gain · log scale · actual token counts shown</text>
   <text x="200" y="476" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="2"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="2"
     fill="#2ECC71" fill-opacity="0.55">WITH ASK TOKEN OPTIMIZER</text>
   <text x="450" y="476" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="2"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="2"
     fill="#C6A15B" fill-opacity="0.55">COMMAND</text>
   <text x="700" y="476" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9" letter-spacing="2"
+    font-family="'Helvetica Neue', sans-serif" font-size="11" letter-spacing="2"
     fill="#E74C3C" fill-opacity="0.55">WITHOUT OPTIMIZER</text>
   <rect x="18" y="481" width="864" height="46" rx="4"
     fill="#1C2028" fill-opacity="0" >
@@ -151,7 +151,7 @@
     <animate attributeName="x" from="388" to="220" dur="0.5s" begin="2.90s" fill="freeze"/>
   </rect>
   <text x="215" y="509" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     334
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.30s" fill="freeze"/>
@@ -161,13 +161,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="2.90s" fill="freeze"/>
   </rect>
   <text x="450" y="501" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     curl
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="2.90s" fill="freeze"/>
   </text>
   <text x="450" y="515" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓99.5%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.00s" fill="freeze"/>
@@ -178,13 +178,13 @@
     <animate attributeName="width" from="0" to="355" dur="0.5s" begin="2.90s" fill="freeze"/>
   </rect>
   <text x="863" y="509" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     61,778
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.30s" fill="freeze"/>
   </text>
   <text x="450" y="526" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     web / app bundle
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.10s" fill="freeze"/>
@@ -200,7 +200,7 @@
     <animate attributeName="x" from="388" to="228" dur="0.5s" begin="3.05s" fill="freeze"/>
   </rect>
   <text x="223" y="561" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     265
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.45s" fill="freeze"/>
@@ -210,13 +210,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.05s" fill="freeze"/>
   </rect>
   <text x="450" y="553" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     grep
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.05s" fill="freeze"/>
   </text>
   <text x="450" y="567" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓99.2%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.15s" fill="freeze"/>
@@ -227,13 +227,13 @@
     <animate attributeName="width" from="0" to="332" dur="0.5s" begin="3.05s" fill="freeze"/>
   </rect>
   <text x="840" y="561" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     32,527
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.45s" fill="freeze"/>
   </text>
   <text x="450" y="578" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     codebase search
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.25s" fill="freeze"/>
@@ -249,7 +249,7 @@
     <animate attributeName="x" from="388" to="318" dur="0.5s" begin="3.20s" fill="freeze"/>
   </rect>
   <text x="313" y="613" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     21
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.60s" fill="freeze"/>
@@ -259,13 +259,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.20s" fill="freeze"/>
   </rect>
   <text x="450" y="605" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     cat
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.20s" fill="freeze"/>
   </text>
   <text x="450" y="619" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓99.9%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.30s" fill="freeze"/>
@@ -276,13 +276,13 @@
     <animate attributeName="width" from="0" to="320" dur="0.5s" begin="3.20s" fill="freeze"/>
   </rect>
   <text x="828" y="613" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     23,141
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.60s" fill="freeze"/>
   </text>
   <text x="450" y="630" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     large log file
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.40s" fill="freeze"/>
@@ -298,7 +298,7 @@
     <animate attributeName="x" from="388" to="285" dur="0.5s" begin="3.35s" fill="freeze"/>
   </rect>
   <text x="280" y="665" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     53
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.75s" fill="freeze"/>
@@ -308,13 +308,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.35s" fill="freeze"/>
   </rect>
   <text x="450" y="657" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     curl
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.35s" fill="freeze"/>
   </text>
   <text x="450" y="671" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓99.8%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.45s" fill="freeze"/>
@@ -325,13 +325,13 @@
     <animate attributeName="width" from="0" to="317" dur="0.5s" begin="3.35s" fill="freeze"/>
   </rect>
   <text x="825" y="665" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     21,467
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.75s" fill="freeze"/>
   </text>
   <text x="450" y="682" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     service api
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.55s" fill="freeze"/>
@@ -347,7 +347,7 @@
     <animate attributeName="x" from="388" to="384" dur="0.5s" begin="3.50s" fill="freeze"/>
   </rect>
   <text x="379" y="717" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     3
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.90s" fill="freeze"/>
@@ -357,13 +357,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.50s" fill="freeze"/>
   </rect>
   <text x="450" y="709" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     find
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.50s" fill="freeze"/>
   </text>
   <text x="450" y="723" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓99.9%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.60s" fill="freeze"/>
@@ -374,13 +374,13 @@
     <animate attributeName="width" from="0" to="250" dur="0.5s" begin="3.50s" fill="freeze"/>
   </rect>
   <text x="758" y="717" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     3,244
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.90s" fill="freeze"/>
   </text>
   <text x="450" y="734" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     recursive
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.70s" fill="freeze"/>
@@ -396,7 +396,7 @@
     <animate attributeName="x" from="388" to="204" dur="0.5s" begin="3.65s" fill="freeze"/>
   </rect>
   <text x="199" y="769" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     522
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="4.05s" fill="freeze"/>
@@ -406,13 +406,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.65s" fill="freeze"/>
   </rect>
   <text x="450" y="761" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     ls -la
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.65s" fill="freeze"/>
   </text>
   <text x="450" y="775" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓76.8%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.75s" fill="freeze"/>
@@ -423,13 +423,13 @@
     <animate attributeName="width" from="0" to="237" dur="0.5s" begin="3.65s" fill="freeze"/>
   </rect>
   <text x="745" y="769" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     2,247
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="4.05s" fill="freeze"/>
   </text>
   <text x="450" y="786" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     dir listing
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="3.85s" fill="freeze"/>
@@ -445,7 +445,7 @@
     <animate attributeName="x" from="388" to="280" dur="0.5s" begin="3.80s" fill="freeze"/>
   </rect>
   <text x="275" y="821" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#2ECC71" fill-opacity="0">
     62
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="4.20s" fill="freeze"/>
@@ -455,13 +455,13 @@
     <animate attributeName="stroke-opacity" from="0" to="0.4" dur="0.3s" begin="3.80s" fill="freeze"/>
   </rect>
   <text x="450" y="813" text-anchor="middle"
-    font-family="'Courier New', monospace" font-size="11" font-weight="600"
+    font-family="'Courier New', monospace" font-size="13" font-weight="600"
     fill="#C6A15B" fill-opacity="0">
     git status
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="3.80s" fill="freeze"/>
   </text>
   <text x="450" y="827" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#2ECC71" fill-opacity="0">
     ↓65.4%
     <animate attributeName="fill-opacity" from="0" to="0.85" dur="0.3s" begin="3.90s" fill="freeze"/>
@@ -472,18 +472,18 @@
     <animate attributeName="width" from="0" to="146" dur="0.5s" begin="3.80s" fill="freeze"/>
   </rect>
   <text x="654" y="821" text-anchor="end"
-    font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600"
+    font-family="'Helvetica Neue', sans-serif" font-size="12" font-weight="600"
     fill="#FFB3A8" fill-opacity="0">
     179
     <animate attributeName="fill-opacity" from="0" to="0.9" dur="0.3s" begin="4.20s" fill="freeze"/>
   </text>
   <text x="450" y="838" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="8"
+    font-family="'Helvetica Neue', sans-serif" font-size="10"
     fill="#E8D7A8" fill-opacity="0">
     monorepo
     <animate attributeName="fill-opacity" from="0" to="0.32" dur="0.3s" begin="4.00s" fill="freeze"/>
   </text>
   <text x="450" y="886" text-anchor="middle"
-    font-family="'Helvetica Neue', sans-serif" font-size="9"
+    font-family="'Helvetica Neue', sans-serif" font-size="11"
     fill="#E8D7A8" fill-opacity="0.28">ASK Token Optimizer · ask-ai.ca · run ask gain to see your own numbers</text>
 </svg>
