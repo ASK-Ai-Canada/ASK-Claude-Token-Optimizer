@@ -37,14 +37,25 @@ if [[ "${R:-Y}" =~ ^[Nn] ]]; then
   read -r -p "Company / organization name: " COMPANY
   read -r -p "Number of seats: " SEATS
   [[ "$SEATS" =~ ^[0-9]+$ ]] || SEATS=1
+  # Mandatory billing currency — CAD (adds 15% HST) or USD (foreign sale, no CA tax). No default.
+  CURRENCY=""
+  while [ "$CURRENCY" != "cad" ] && [ "$CURRENCY" != "usd" ]; do
+    read -r -p "Billing currency — type CAD or USD (required): " _C
+    CURRENCY="$(printf '%s' "$_C" | tr '[:upper:]' '[:lower:]')"
+    [ "$CURRENCY" != "cad" ] && [ "$CURRENCY" != "usd" ] && say "  Please type CAD or USD."
+  done
   YEARLY=$(( 25 * SEATS ))
   say ""
-  say "  Plan: CAD \$25 / seat / year x ${SEATS} seat(s) = CAD \$${YEARLY} / year."
+  if [ "$CURRENCY" = "cad" ]; then
+    say "  Plan: CAD \$25 / seat / year x ${SEATS} seat(s) = CAD \$${YEARLY} + 15% HST / year."
+  else
+    say "  Plan: USD \$25 / seat / year x ${SEATS} seat(s) = USD \$${YEARLY} / year (no CA tax)."
+  fi
   say "  ★ Your first month is FREE — no charge for 30 days; cancel anytime before then."
   say "  We'll email ${EMAIL} to start your free month + activation; billing begins after the 30-day trial. Questions: licensing@ask-ai.ca."
 else
   TIER="free"
-  COMPANY=""; SEATS=""
+  COMPANY=""; SEATS=""; CURRENCY=""
 fi
 
 # 3. telemetry — community: always on (the exchange for free use); paid: optional, default on
@@ -66,8 +77,8 @@ fi
 MACHINE_ID="$( (hostname; uname -a) 2>/dev/null | shasum 2>/dev/null | cut -c1-16 || echo unknown )"
 OS="$(uname -s)"; NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
 PLAN="$([ "$TIER" = commercial ] && echo seat-25-yearly || echo free)"
-PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","ver":"INSTALLER"}' \
-  "$EMAIL" "$FULLNAME" "$TIER" "${COMPANY:-}" "${SEATS:-}" "$PLAN" "$TELEMETRY" "$EULA_VERSION" "$NOW" "$MACHINE_ID" "$OS")
+PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","currency":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","ver":"INSTALLER"}' \
+  "$EMAIL" "$FULLNAME" "$TIER" "${COMPANY:-}" "${SEATS:-}" "${CURRENCY:-}" "$PLAN" "$TELEMETRY" "$EULA_VERSION" "$NOW" "$MACHINE_ID" "$OS")
 INSTALL_TOKEN=""
 CHECKOUT_URL=""
 if command -v curl >/dev/null; then
