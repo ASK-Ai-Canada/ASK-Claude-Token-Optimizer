@@ -3,69 +3,106 @@
 #
 # Run from PowerShell (NOT cmd):
 #   .\install.ps1
+# (If downloaded as a single file and blocked by policy:  powershell -ExecutionPolicy Bypass -File .\install.ps1 )
 #
 # What this does (no admin required):
-#   1. License clickwrap + registration (free / commercial — seats, CAD or USD)
-#   2. Downloads the latest binary from GitHub Releases (checksum-verified)
+#   1. License clickwrap + registration (free / commercial - seats, CAD or USD)
+#   2. Downloads the latest binary from GitHub Releases (checksum-verified, retried)
 #   3. Installs to %USERPROFILE%\.local\bin\ + adds to user PATH (persistent)
-#   4. Stages hook templates to %USERPROFILE%\.claude\hooks\ + offers to wire them
+#   4. Stages hook templates (fetched from the repo if not local) + offers to wire them
 
 param([switch]$AcceptLicense)
 
 $ErrorActionPreference = 'Stop'
+$ProgressPreference    = 'SilentlyContinue'
+
+# Older Windows defaults to TLS 1.0 - GitHub requires 1.2+. Harmless where already set.
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch {}
 
 $EulaVersion = "1.1"
 $RegisterUrl = if ($env:ATO_REGISTER_URL) { $env:ATO_REGISTER_URL } else { "https://api.ask-ai.ca/v1/ato" }
 $Repo        = "ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
 $AssetName   = "ask-token-optimizer-windows-x86_64.exe"
 
-# Brand colors — closest 24-bit ANSI to the 2026 Executive Style spec.
+# Brand colors - closest 24-bit ANSI to the 2026 Executive Style spec.
 $gold     = "$([char]27)[38;2;198;161;91m"   # #C6A15B Sovereign gold
 $paleGold = "$([char]27)[38;2;232;215;168m"  # #E8D7A8 Pale gold
 $charcoal = "$([char]27)[38;2;43;47;54m"     # #2B2F36 Charcoal text
 $dim      = "$([char]27)[2m"
 $reset    = "$([char]27)[0m"
 
-function Banner([string]$Version) {
-  $verLine = if ($Version) { "v$Version" } else { "Windows x86_64" }
+# Console capability: Unicode box art on Windows Terminal / PS7 / UTF-8 codepages;
+# clean ASCII everywhere else (legacy conhost, ssh sessions, OEM codepages).
+$uni = $false
+try {
+  if ($env:WT_SESSION) { $uni = $true }
+  elseif ($PSVersionTable.PSVersion.Major -ge 7) { $uni = $true }
+  elseif ([Console]::OutputEncoding.CodePage -eq 65001) { $uni = $true }
+} catch { $uni = $false }
+if ($uni) {
+  $gTL = [string][char]0x250C; $gTR = [string][char]0x2510
+  $gBL = [string][char]0x2514; $gBR = [string][char]0x2518
+  $gH  = [string][char]0x2500; $gV  = [string][char]0x2502
+  $gTick = [string][char]0x2713; $gDot = [string][char]0x25CF
+  $gStar = [string][char]0x2605; $gMid = [string][char]0x00B7
+} else {
+  $gTL = "+"; $gTR = "+"; $gBL = "+"; $gBR = "+"
+  $gH = "-"; $gV = "|"; $gTick = "OK"; $gDot = "*"; $gStar = "*"; $gMid = "-"
+}
+$gBar = $gH * 57
+
+function Banner {
   Write-Host ""
-  Write-Host "   ${gold}┌─────────────────────────────────────────────────────────┐${reset}"
-  Write-Host "   ${gold}│${reset}                                                         ${gold}│${reset}"
-  Write-Host "   ${gold}│${reset}     ${gold}A S K${reset}   ${paleGold}Token Optimizer${reset}                       ${gold}│${reset}"
-  Write-Host "   ${gold}│${reset}     ${dim}token compression for Claude Code${reset}                ${gold}│${reset}"
-  Write-Host "   ${gold}│${reset}                                                         ${gold}│${reset}"
-  Write-Host "   ${gold}└─────────────────────────────────────────────────────────┘${reset}"
+  Write-Host "   ${gold}${gTL}${gBar}${gTR}${reset}"
+  Write-Host "   ${gold}${gV}${reset}                                                         ${gold}${gV}${reset}"
+  Write-Host "   ${gold}${gV}${reset}     ${gold}A S K${reset}   ${paleGold}Token Optimizer${reset}                       ${gold}${gV}${reset}"
+  Write-Host "   ${gold}${gV}${reset}     ${dim}token compression for Claude Code${reset}                ${gold}${gV}${reset}"
+  Write-Host "   ${gold}${gV}${reset}                                                         ${gold}${gV}${reset}"
+  Write-Host "   ${gold}${gBL}${gBar}${gBR}${reset}"
   Write-Host ""
-  Write-Host "   ${dim}${verLine}   ·   Windows x86_64   ·   Executive Edition${reset}"
+  Write-Host "   ${dim}Windows x86_64   ${gMid}   Executive Edition${reset}"
   Write-Host ""
 }
 
 function Step([int]$n, [string]$msg) {
-  Write-Host "   ${gold}●${reset} ${charcoal}Step $n${reset}  ${msg}"
+  Write-Host "   ${gold}${gDot}${reset} ${charcoal}Step $n${reset}  ${msg}"
 }
 
 function Tick([string]$msg) {
-  Write-Host "     ${gold}✓${reset} $msg"
+  Write-Host "     ${gold}${gTick}${reset} $msg"
+}
+
+# Download with 3 attempts + backoff. Returns $true on success.
+function Save-Remote([string]$Uri, [string]$OutFile) {
+  for ($i = 1; $i -le 3; $i++) {
+    try {
+      Invoke-WebRequest -Uri $Uri -OutFile $OutFile -UseBasicParsing -TimeoutSec 180
+      return $true
+    } catch {
+      if ($i -lt 3) { Start-Sleep -Seconds (2 * $i) }
+    }
+  }
+  return $false
 }
 
 $installDir = "$env:USERPROFILE\.local\bin"
 $hookDir    = "$env:USERPROFILE\.claude\hooks"
 $askHome    = "$env:USERPROFILE\.ask"
 
-Banner ""
+Banner
 
 # ─── 1. License acceptance (clickwrap, before anything else) ────────────────
 if (-not $AcceptLicense) {
-  Write-Host "   ${charcoal}ASK Token Optimizer — Dual License (Community + Commercial)${reset}"
-  Write-Host "     ${dim}• Free for individuals and companies under USD `$100k annual gross revenue.${reset}"
-  Write-Host "     ${dim}• Companies at or above USD `$100k need a paid Commercial License.${reset}"
-  Write-Host "     ${dim}• Full terms: LICENSE in the repository. Governing law: Canada.${reset}"
+  Write-Host "   ${charcoal}ASK Token Optimizer - Dual License (Community + Commercial)${reset}"
+  Write-Host "     ${dim}- Free for individuals and companies under USD `$100k annual gross revenue.${reset}"
+  Write-Host "     ${dim}- Companies at or above USD `$100k need a paid Commercial License.${reset}"
+  Write-Host "     ${dim}- Full terms: LICENSE in the repository. Governing law: Canada.${reset}"
   Write-Host ""
   $reply = Read-Host "   Type 'accept' to agree to the LICENSE and continue"
   if ($reply -ne 'accept') { Write-Host "   License not accepted. Aborting."; exit 1 }
 }
 
-# ─── 2. Registration — identical contract to setup.sh ──────────────────────
+# ─── 2. Registration - identical contract to setup.sh ──────────────────────
 Write-Host ""
 Step 1 "Registration"
 $Email = ""
@@ -80,13 +117,13 @@ if ($r -match '^[Nn]') {
   $Tier = "commercial"
   Write-Host ""
   Write-Host "     ${paleGold}Business use at or above `$100k runs on a commercial subscription:${reset}"
-  Write-Host "     ${paleGold}ASK Token Optimizer — `$25 per seat / year (first month FREE).${reset}"
+  Write-Host "     ${paleGold}ASK Token Optimizer - `$25 per seat / year (first month FREE).${reset}"
   $Company = (Read-Host "     Company / organization name").Trim()
   $Seats = (Read-Host "     Number of seats").Trim()
   if ($Seats -notmatch '^\d+$') { $Seats = "1" }
-  # Mandatory billing currency — CAD (adds 15% HST) or USD (foreign sale, no CA tax). No default.
+  # Mandatory billing currency - CAD (adds 15% HST) or USD (foreign sale, no CA tax). No default.
   while ($Currency -ne 'cad' -and $Currency -ne 'usd') {
-    $Currency = (Read-Host "     Billing currency — type CAD or USD (required)").Trim().ToLower()
+    $Currency = (Read-Host "     Billing currency - type CAD or USD (required)").Trim().ToLower()
     if ($Currency -ne 'cad' -and $Currency -ne 'usd') { Write-Host "     ${dim}Please type CAD or USD.${reset}" }
   }
   $yearly = 25 * [int]$Seats
@@ -95,28 +132,34 @@ if ($r -match '^[Nn]') {
   } else {
     Write-Host "     Plan: USD `$25 / seat / year x $Seats seat(s) = USD `$$yearly / year (no CA tax)."
   }
-  Write-Host "     ${dim}★ First month FREE — no charge for 30 days; cancel anytime before then.${reset}"
+  Write-Host "     ${dim}${gStar} First month FREE - no charge for 30 days; cancel anytime before then.${reset}"
 }
 
-# Telemetry — community: always on (the exchange for free use); paid: optional, default on.
+# Telemetry - community: always on (the exchange for free use); paid: optional, default on.
 $Telemetry = "on"
 if ($Tier -eq 'free') {
   Write-Host ""
-  Write-Host "     ${dim}Help us improve — anonymous savings stats keep the free tier free.${reset}"
+  Write-Host "     ${dim}Help us improve - anonymous savings stats keep the free tier free.${reset}"
   Write-Host "     ${dim}Private by design: only the totals you save are shared.${reset}"
 } else {
   Write-Host ""
-  Write-Host "     [x] Help us improve — share anonymous savings stats. Private by design."
+  Write-Host "     [x] Help us improve - share anonymous savings stats. Private by design."
   $to = (Read-Host "         Press Enter to keep enabled, or type 'no' to opt out").Trim()
   if ($to -match '^[Nn]') { $Telemetry = "off" }
 }
 
-$MachineId = ""
+# Stable machine id: CIM product UUID, registry MachineGuid fallback, then hostname-only.
+$hwid = ""
+try { $hwid = (Get-CimInstance Win32_ComputerSystemProduct -ErrorAction Stop).UUID } catch {}
+if (-not $hwid) {
+  try { $hwid = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Cryptography" -ErrorAction Stop).MachineGuid } catch {}
+}
+$MachineId = "unknown"
 try {
-  $raw = "$env:COMPUTERNAME|$env:USERNAME|$((Get-CimInstance Win32_ComputerSystemProduct -ErrorAction SilentlyContinue).UUID)"
   $sha = [System.Security.Cryptography.SHA1]::Create()
-  $MachineId = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($raw))) -replace '-', '').ToLower().Substring(0, 16)
-} catch { $MachineId = "unknown" }
+  $rawId = "$env:COMPUTERNAME|$env:USERNAME|$hwid"
+  $MachineId = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($rawId))) -replace '-', '').ToLower().Substring(0, 16)
+} catch {}
 $Now  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $Plan = if ($Tier -eq 'commercial') { "seat-25-yearly" } else { "free" }
 
@@ -143,17 +186,17 @@ if ($InstallToken) {
   Tick "registered"
   if ($CheckoutUrl) {
     Write-Host ""
-    Write-Host "     ${gold}★ Start your FREE month — add your card (no charge for 30 days):${reset}"
+    Write-Host "     ${gold}${gStar} Start your FREE month - add your card (no charge for 30 days):${reset}"
     Write-Host "       $CheckoutUrl"
     Write-Host "       ${dim}(link also emailed to $Email)${reset}"
     Write-Host ""
   }
 } else {
-  Write-Host "     ${dim}• registration deferred (offline) — the app completes it automatically in the background${reset}"
+  Write-Host "     ${dim}- registration deferred (offline) - the app completes it automatically in the background${reset}"
 }
 
-# Local license record — written unconditionally; the binary self-heals an
-# empty install_token from this file (see README).
+# Local license record - written unconditionally; the binary self-heals an
+# empty install_token from this file.
 New-Item -ItemType Directory -Force -Path $askHome | Out-Null
 @{
   email = $Email; name = $FullName; tier = $Tier; company = $Company; seats = $Seats
@@ -173,7 +216,7 @@ if ($Telemetry -eq 'off') {
   }
 }
 
-# ─── 3. Binary — download from the latest GitHub Release, checksum-verified ─
+# ─── 3. Binary - latest GitHub Release, checksum-verified, retried ──────────
 Write-Host ""
 Step 2 "Installing the binary"
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
@@ -187,25 +230,28 @@ if (Test-Path $localSdk) {
   $tag = if ($env:ATO_VERSION) { $env:ATO_VERSION } else { "latest" }
   $base = if ($tag -eq "latest") { "https://github.com/$Repo/releases/latest/download" } else { "https://github.com/$Repo/releases/download/$tag" }
   Write-Host "     ${dim}downloading $AssetName ($tag)...${reset}"
-  Invoke-WebRequest -Uri "$base/$AssetName" -OutFile $exeTmp -UseBasicParsing
+  if (-not (Save-Remote "$base/$AssetName" $exeTmp)) {
+    Write-Host "     ${gold}!${reset} download failed after 3 attempts - check your connection and re-run."
+    exit 1
+  }
   # Verify against the .sha256 sidecar (format: "<hex>  <name>").
-  # GitHub serves assets as octet-stream → .Content is byte[]; decode before parsing.
+  # GitHub serves assets as octet-stream -> .Content is byte[]; decode before parsing.
   try {
-    $shaRaw = (Invoke-WebRequest -Uri "$base/$AssetName.sha256" -UseBasicParsing).Content
+    $shaRaw = (Invoke-WebRequest -Uri "$base/$AssetName.sha256" -UseBasicParsing -TimeoutSec 60).Content
     if ($shaRaw -is [byte[]]) { $shaRaw = [Text.Encoding]::ASCII.GetString($shaRaw) }
     $want = "$shaRaw".Trim().Split(' ')[0].ToLower()
     if ($want -match '^[0-9a-f]{64}$') {
       $have = (Get-FileHash $exeTmp -Algorithm SHA256).Hash.ToLower()
       if ($want -ne $have) {
-        Write-Host "     ${gold}!${reset} checksum mismatch — aborting install."
+        Write-Host "     ${gold}!${reset} checksum mismatch - aborting install."
         Remove-Item $exeTmp -Force; exit 1
       }
       Tick "checksum verified"
     } else {
-      Write-Host "     ${dim}checksum sidecar unreadable — continuing without verification${reset}"
+      Write-Host "     ${dim}checksum sidecar unreadable - continuing without verification${reset}"
     }
   } catch {
-    Write-Host "     ${dim}checksum sidecar unavailable — continuing without verification${reset}"
+    Write-Host "     ${dim}checksum sidecar unavailable - continuing without verification${reset}"
   }
 }
 
@@ -220,15 +266,17 @@ Tick "ask.exe                  ->  short alias"
 # ─── 4. PATH ────────────────────────────────────────────────────────────────
 Step 3 "Adding to user PATH"
 $current = [Environment]::GetEnvironmentVariable("Path", "User")
+if (-not $current) { $current = "" }
 if ($current -notlike "*$installDir*") {
-  [Environment]::SetEnvironmentVariable("Path", "$current;$installDir", "User")
+  $newPath = ("$current;$installDir").TrimStart(';')
+  [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
   $env:Path += ";$installDir"
   Tick "appended $installDir"
 } else {
   Tick "already on PATH"
 }
 
-# ─── 5. Hook templates ──────────────────────────────────────────────────────
+# ─── 5. Hook templates (local repo copy, or fetched from GitHub) ────────────
 Step 4 "Staging hook templates"
 New-Item -ItemType Directory -Force -Path $hookDir | Out-Null
 if (Test-Path "hooks") {
@@ -237,19 +285,25 @@ if (Test-Path "hooks") {
   }
   Tick "templates -> $hookDir"
 } else {
-  Write-Host "     ${dim}no hooks\ folder here — clone the repo or fetch hooks/ from GitHub, then re-run${reset}"
+  # Standalone install.ps1 (no repo folder) - fetch the Windows hooks from GitHub.
+  $fetched = 0
+  foreach ($hf in @("ask-rewrite.py", "ask-filter.py", "ato_telemetry.py")) {
+    if (Save-Remote "https://raw.githubusercontent.com/$Repo/main/hooks/$hf" (Join-Path $hookDir $hf)) { $fetched++ }
+  }
+  if ($fetched -eq 3) { Tick "hooks fetched from GitHub -> $hookDir" }
+  else { Write-Host "     ${dim}could not fetch all hooks ($fetched/3) - clone the repo and re-run, or copy hooks\ manually${reset}" }
 }
 
 # ─── Verification ────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "   ${gold}─── Verification ──────────────────────────────────────────${reset}"
+Write-Host "   ${gold}$($gH * 3) Verification $($gH * 44)${reset}"
 Write-Host ""
 & "$installDir\ask-token-optimizer.exe" --version
 Write-Host ""
 
 # ─── Hook auto-wire ─────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "   ${gold}─── Claude Code hook wiring ───────────────────────────────${reset}"
+Write-Host "   ${gold}$($gH * 3) Claude Code hook wiring $($gH * 33)${reset}"
 Write-Host ""
 $settingsCandidates = @(
   "$env:USERPROFILE\.claude\settings.json",
@@ -257,10 +311,13 @@ $settingsCandidates = @(
 )
 $settingsPath = $null
 foreach ($c in $settingsCandidates) { if (Test-Path $c) { $settingsPath = $c; break } }
+$python = Get-Command python -ErrorAction SilentlyContinue
 
 if (-not $settingsPath) {
   Write-Host "   ${dim}settings.json not found. Wire hooks manually after first Claude Code launch.${reset}"
   Write-Host "   See README.md for the JSON snippet."
+} elseif (-not $python) {
+  Write-Host "   ${dim}Python not found - the hooks need it. Install Python 3, then wire manually (README.md).${reset}"
 } else {
   $content = Get-Content $settingsPath -Raw
   if ($content -like "*ask-rewrite*") {
@@ -290,7 +347,7 @@ print('ok')
       $result = python $tmp $settingsPath $rw $fi 2>&1
       Remove-Item $tmp -Force
       if ($result -eq 'ok') { Tick "Hooks wired into $settingsPath" }
-      else { Write-Host "   ${gold}!${reset} Auto-wire failed — add manually (see README.md): $result" }
+      else { Write-Host "   ${gold}!${reset} Auto-wire failed - add manually (see README.md): $result" }
     } else {
       Write-Host "   ${dim}Skipped. See README.md > 'Activate the hooks' for the JSON snippet.${reset}"
     }
@@ -299,11 +356,11 @@ print('ok')
 
 # ─── Done ────────────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "   ${gold}─── You are set up ────────────────────────────────────────${reset}"
+Write-Host "   ${gold}$($gH * 3) You are set up $($gH * 42)${reset}"
 Write-Host ""
 Write-Host "   1.  ${charcoal}Open a new PowerShell window${reset}  (so PATH refreshes)"
 Write-Host "   2.  ${charcoal}Restart Claude Code${reset}"
 Write-Host "   3.  Run  ${gold}ask audit${reset}  after a few commands to see your savings"
 Write-Host ""
-Write-Host "   ${dim}Docs:${reset}  README.md  ·  INSTALL-WINDOWS.md"
+Write-Host "   ${dim}Docs:${reset}  README.md  $gMid  INSTALL-WINDOWS.md"
 Write-Host ""
