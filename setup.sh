@@ -82,8 +82,15 @@ PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"
 INSTALL_TOKEN=""
 CHECKOUT_URL=""
 if command -v curl >/dev/null; then
-  RESP="$(curl -fsS -m 12 -X POST "$REGISTER_URL/register" \
-    -H 'content-type: application/json' -d "$PAYLOAD" 2>/dev/null || true)"
+  # 3 attempts with short backoff; if all fail, the app self-heals the
+  # registration in the background (license.json keeps the payload).
+  RESP=""
+  for _try in 1 2 3; do
+    RESP="$(curl -fsS -m 12 -X POST "$REGISTER_URL/register" \
+      -H 'content-type: application/json' -d "$PAYLOAD" 2>/dev/null || true)"
+    [ -n "$RESP" ] && break
+    [ "$_try" -lt 3 ] && sleep $(( _try * 2 ))
+  done
   if [ -n "$RESP" ]; then
     INSTALL_TOKEN="$(printf '%s' "$RESP" | sed -n 's/.*"install_token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
     CHECKOUT_URL="$(printf '%s' "$RESP" | sed -n 's/.*"checkout_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
@@ -96,14 +103,14 @@ if command -v curl >/dev/null; then
       say ""
     fi
   else
-    say "• registration deferred (offline) — telemetry stays off until registered"
+    say "• registration deferred (offline) — the app completes it automatically in the background"
   fi
 fi
 
 # 5. local license record ----------------------------------------------------------
 mkdir -p "$ASK_HOME" "$BIN_DIR"
 cat > "$LICENSE_JSON" <<EOF
-{"email":"$EMAIL","name":"$FULLNAME","tier":"$TIER","telemetry":"$TELEMETRY","eula_version":"$EULA_VERSION","accepted_at":"$NOW","machine_id":"$MACHINE_ID","install_token":"$INSTALL_TOKEN"}
+{"email":"$EMAIL","name":"$FULLNAME","tier":"$TIER","company":"${COMPANY:-}","seats":"${SEATS:-}","currency":"${CURRENCY:-}","telemetry":"$TELEMETRY","eula_version":"$EULA_VERSION","accepted_at":"$NOW","machine_id":"$MACHINE_ID","install_token":"$INSTALL_TOKEN"}
 EOF
 ok "license record written to $LICENSE_JSON"
 

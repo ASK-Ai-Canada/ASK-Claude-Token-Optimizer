@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""ASK-TO PreToolUse hook — rewrites commands to use ASK filters.
-Based on RTK's proven hookSpecificOutput format (60-90% savings).
+"""ASK Token Optimizer PreToolUse hook — rewrites commands to run through the ASK filters.
+Emits Claude Code's hookSpecificOutput envelope so the rewritten command runs in place (60-90% token savings).
 """
 import json, sys, subprocess, os
 
@@ -11,7 +11,7 @@ try:
 except:
     sys.exit(0)
 
-# Claude Code sends tool_input.command (RTK/older) or input.command (newer)
+# Claude Code sends tool_input.command (older) or input.command (newer)
 cmd = None
 input_key = None
 if "tool_input" in data:
@@ -26,6 +26,13 @@ if not cmd or not input_key:
 
 # Skip if already rewritten or absolute path
 if cmd.startswith("ask ") or cmd.startswith("/home/") or cmd.startswith("/usr/"):
+    sys.exit(0)
+
+# Skip compound / multi-statement commands. Rewriting a single recognized command
+# is safe, but injecting `ask` inside a `&&`/`;`/newline chain (e.g.
+# `cd x && grep y` -> `cd x && ask grep y`) corrupts the command. Only ever
+# rewrite a single statement; pass everything else through untouched.
+if any(op in cmd for op in ("&&", "||", ";", "\n")):
     sys.exit(0)
 
 # Pass the command as a single arg so pipes/quotes/spaces are preserved.
@@ -48,7 +55,7 @@ if rewritten == cmd:
 if not rewritten.startswith("ask "):
     sys.exit(0)
 
-# Build hookSpecificOutput (RTK proven format)
+# Build the hookSpecificOutput envelope
 updated_input = dict(data[input_key])
 updated_input["command"] = rewritten
 
