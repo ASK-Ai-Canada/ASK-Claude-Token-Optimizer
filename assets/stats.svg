@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1C21"/>
+      <stop offset="100%" stop-color="#141618"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C6A15B"/>
+      <stop offset="50%" stop-color="#F0D98A"/>
+      <stop offset="100%" stop-color="#C6A15B"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="900" height="620" fill="url(#bg)" rx="12"/>
+  <rect width="900" height="620" fill="none" stroke="#C6A15B" stroke-width="1" stroke-opacity="0.2" rx="12"/>
+
+  <!-- eyebrow -->
+  <text x="450" y="64" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif"
+    font-size="12" letter-spacing="5" fill="#C6A15B" fill-opacity="0.85">MEASURED SAVINGS · REAL SESSION</text>
+
+  <!-- hero number -->
+  <text x="450" y="218" text-anchor="middle" font-family="Georgia, serif" font-size="132" font-weight="700"
+    fill="url(#gold)" filter="url(#soft)">87.7%</text>
+  <text x="450" y="266" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif"
+    font-size="24" fill="#F2F3F5">session token reduction</text>
+  <text x="450" y="298" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif"
+    font-size="14" fill="#9AA2AB">340,000 tokens in&#160;&#160;→&#160;&#160;41,800 delivered to Claude&#160;&#160;·&#160;&#160;351 commands over 30 days</text>
+
+  <!-- stat tiles -->
+  <g>
+    <rect x="20" y="340" width="268" height="130" rx="10" fill="#1F2630" stroke="#C6A15B" stroke-opacity="0.3"/>
+    <text x="154" y="404" text-anchor="middle" font-family="Georgia, serif" font-size="42" font-weight="700" fill="#F2F3F5">98.9%</text>
+    <text x="154" y="438" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9AA2AB">peak reduction — grep, large codebase</text>
+
+    <rect x="316" y="340" width="268" height="130" rx="10" fill="#1F2630" stroke="#C6A15B" stroke-opacity="0.3"/>
+    <text x="450" y="404" text-anchor="middle" font-family="Georgia, serif" font-size="42" font-weight="700" fill="#F2F3F5">828</text>
+    <text x="450" y="438" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9AA2AB">tests passing on the shipped build</text>
+
+    <rect x="612" y="340" width="268" height="130" rx="10" fill="#1F2630" stroke="#C6A15B" stroke-opacity="0.3"/>
+    <text x="746" y="404" text-anchor="middle" font-family="Georgia, serif" font-size="42" font-weight="700" fill="#F2F3F5">100%</text>
+    <text x="746" y="438" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9AA2AB">local · offline · no API key, no cloud</text>
+  </g>
+
+  <!-- honesty + audit line -->
+  <text x="450" y="520" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13.5" fill="#9AA2AB">Headline includes one 250K-token grep; steady-state is <tspan fill="#E8D7A8" font-weight="600">56.2%</tspan> — both real, both shown. Your workload lands between.</text>
+  <text x="450" y="556" text-anchor="middle" font-family="'Courier New', monospace" font-size="14" fill="#C6A15B">$ ask audit&#160;&#160;<tspan fill="#9AA2AB">→ your own number, measured on your own machine</tspan></text>
+
+  <!-- tagline -->
+  <text x="450" y="595" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#E8D7A8" fill-opacity="0.85">ATO — pure signal. Same information.</text>
+</svg>

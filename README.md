@@ -49,16 +49,7 @@ That's not a Claude problem. That's a plumbing problem. And it's solvable before
 
 It sits between your terminal and Claude Code as two lightweight hooks. Before Claude sees a command's output, the optimizer filters it — stripping noise, collapsing repetition, keeping only what Claude actually needs to reason about. The output is structurally identical; the token count is not.
 
-```
-Without optimizer:
-  git status  →  raw output  →  Claude sees 1,200 tokens
-
-With optimizer:
-  git status  →  filtered     →  Claude sees 110 tokens
-                                              ↑
-                                        92% fewer tokens.
-                                        Same information.
-```
+<img src="assets/how-it-works.svg" alt="How it works — Claude Code → ATO → Your Shell" width="100%"/>
 
 No API key. No cloud. No account. The optimizer runs locally, processes output on your machine, and never touches the network.
 
@@ -143,6 +134,8 @@ Ledger is yours — on-disk, SQLite-readable, never leaves machine.
 ---
 
 ## Performance — live audit data
+
+<img src="assets/stats.svg" alt="87.7% session token reduction — measured" width="100%"/>
 
 <img src="assets/compression-demo.svg" alt="Per command savings" width="100%"/>
 
