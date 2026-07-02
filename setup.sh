@@ -53,7 +53,7 @@ if [[ "${R:-Y}" =~ ^[Nn] ]]; then
     say "  Plan: USD \$25 / seat / year x ${SEATS} seat(s) = USD \$${YEARLY} / year (no CA tax)."
   fi
   say "  ★ Your first month is FREE — no charge for 30 days; cancel anytime before then."
-  say "  We'll email ${EMAIL} to start your free month + activation; billing begins after the 30-day trial. Questions: licensing@ask-ai.ca."
+  say "  You're active immediately — no card needed to use it. We'll email ${EMAIL} a billing-setup link (forwardable to your billing team; invoicing available). Questions: licensing@ask-ai.ca."
 else
   TIER="free"
   COMPANY=""; SEATS=""; CURRENCY=""
@@ -100,7 +100,8 @@ if command -v curl >/dev/null; then
     ok "registered"
     if [ -n "$CHECKOUT_URL" ]; then
       say ""
-      say "  ★ Start your FREE month — add your card (no charge for 30 days):"
+      say "  ★ Your free month is active — nothing is blocked. Set up billing when convenient"
+      say "    (you or your billing team — the link is forwardable; invoicing available):"
       say "      $CHECKOUT_URL"
       say "      Then CAD \$25 / seat / year, auto-renewing. (link also emailed to $EMAIL)"
       say ""

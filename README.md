@@ -62,7 +62,7 @@ A single codebase. Two licenses. The engine is identical in both tiers — nothi
 | | **Community** | **Commercial** |
 |---|---|---|
 | Who | Individuals + companies under **CAD $100K** annual revenue | Companies at or above **CAD $100K** for business use |
-| Cost | Free, forever | **CAD $25 / seat / year** · **first month free** · auto-renews yearly · valid card required |
+| Cost | Free, forever | **$25 / seat / year (USD or CAD)** · **first month free** · auto-renews yearly · **no card gate** — self-serve checkout or invoice; usage is never blocked |
 | Engine | Full, unlimited | Same engine |
 | Support | Community | SLA · priority fixes · dedicated contact · private channel |
 

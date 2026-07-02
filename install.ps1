@@ -186,7 +186,8 @@ if ($InstallToken) {
   Tick "registered"
   if ($CheckoutUrl) {
     Write-Host ""
-    Write-Host "     ${gold}${gStar} Start your FREE month - add your card (no charge for 30 days):${reset}"
+    Write-Host "     ${gold}${gStar} Your free month is active - nothing is blocked. Set up billing when convenient${reset}"
+    Write-Host "     ${gold}  (you or your billing team - the link is forwardable; invoicing available):${reset}"
     Write-Host "       $CheckoutUrl"
     Write-Host "       ${dim}(link also emailed to $Email)${reset}"
     Write-Host ""

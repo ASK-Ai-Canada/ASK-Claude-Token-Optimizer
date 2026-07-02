@@ -19,7 +19,7 @@ Clone or download this repository, then from PowerShell in the repo folder:
 The installer walks you through:
 
 - **License** — clickwrap (Community: free under USD $100K annual revenue · Commercial above).
-- **Registration** — email + name; commercial adds company, seats, and a **required billing currency (CAD or USD)**. CAD adds 15% HST as a separate line; USD is a foreign sale, no CA tax. Commercial receives a card-capture link — **first month free**, seat count adjustable right on the checkout page.
+- **Registration** — email + name; commercial adds company, seats, and a **required billing currency (CAD or USD)**. CAD adds 15% HST as a separate line; USD is a foreign sale, no CA tax. Commercial receives a billing-setup link — **first month free, no card gate** (usage is never blocked; forward the link to your billing team or request an invoice), seat count adjustable right on the checkout page.
 - **Binary** — downloaded from `releases/latest` (pin a version with `$env:ATO_VERSION="vX.Y.Z"`), SHA-256 verified against the release sidecar, installed to `%USERPROFILE%\.local\bin` as `ask.exe` + `ask-token-optimizer.exe`, added to your user PATH persistently.
 - **Hooks** — staged to `%USERPROFILE%\.claude\hooks` and, with your consent, wired into Claude Code's `settings.json` (a `.bak` is kept).
 
