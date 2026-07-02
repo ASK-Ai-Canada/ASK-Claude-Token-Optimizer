@@ -9,6 +9,7 @@ HOOKS_DIR="${HOOKS_DIR:-$HOME/.claude/hooks}"
 LICENSE_JSON="$ASK_HOME/license.json"
 REGISTER_URL="${ATO_REGISTER_URL:-https://api.ask-ai.ca/v1/ato}"
 GITHUB_RAW="https://raw.githubusercontent.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/main"
+REPO_SLUG="ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
 EULA_VERSION="1.1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -74,7 +75,9 @@ else
 fi
 
 # 4. register (POST → ZoneMTA email + record; non-fatal if offline) ----------------
-MACHINE_ID="$( (hostname; uname -a) 2>/dev/null | shasum 2>/dev/null | cut -c1-16 || echo unknown )"
+# machine id — hash-tool fallback chain (shasum is perl, absent on minimal Linux)
+MACHINE_ID="$( (hostname; uname -a) 2>/dev/null | { shasum 2>/dev/null || sha1sum 2>/dev/null || md5sum 2>/dev/null || cat; } | cut -c1-16 | tr -cd 'a-zA-Z0-9._-' )"
+[ -n "$MACHINE_ID" ] || MACHINE_ID="unknown"
 OS="$(uname -s)"; NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
 PLAN="$([ "$TIER" = commercial ] && echo seat-25-yearly || echo free)"
 PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","currency":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","ver":"INSTALLER"}' \
@@ -147,14 +150,41 @@ case "$_os-$_arch" in
 esac
 
 if [ -n "$PLATFORM" ]; then
-  BINARY_URL="$GITHUB_RAW/builds/$PLATFORM/ask-token-optimizer"
-  say "Downloading binary ($PLATFORM)..."
-  if command -v curl >/dev/null; then
-    curl -fsSL -o "$BIN_DIR/ask" "$BINARY_URL"
-  elif command -v wget >/dev/null; then
-    wget -qO "$BIN_DIR/ask" "$BINARY_URL"
+  # Binaries ship via GitHub RELEASES (checksum-verified) — never from the repo tree.
+  ASSET="ask-token-optimizer-$PLATFORM"
+  TAG="${ATO_VERSION:-latest}"
+  if [ "$TAG" = "latest" ]; then
+    BASE_URL="https://github.com/$REPO_SLUG/releases/latest/download"
   else
-    err "curl or wget required to download binary."; exit 1
+    BASE_URL="https://github.com/$REPO_SLUG/releases/download/$TAG"
+  fi
+  say "Downloading $ASSET ($TAG)..."
+  DL_OK=""
+  for _a in 1 2 3; do
+    if command -v curl >/dev/null; then
+      curl -fsSL --connect-timeout 15 -o "$BIN_DIR/ask" "$BASE_URL/$ASSET" && DL_OK=1 && break
+    elif command -v wget >/dev/null; then
+      wget -qO "$BIN_DIR/ask" "$BASE_URL/$ASSET" && DL_OK=1 && break
+    else
+      err "curl or wget required to download the binary."; exit 1
+    fi
+    [ "$_a" -lt 3 ] && sleep $(( _a * 2 ))
+  done
+  [ -n "$DL_OK" ] || { err "Download failed after 3 attempts — check your connection and re-run."; exit 1; }
+  # Verify against the .sha256 sidecar (sha256sum on Linux; shasum -a 256 on macOS)
+  WANT="$( { curl -fsSL --connect-timeout 15 "$BASE_URL/$ASSET.sha256" 2>/dev/null || true; } | awk '{print tolower($1)}' | head -1 )"
+  if printf '%s' "$WANT" | grep -qE '^[0-9a-f]{64}$'; then
+    if command -v sha256sum >/dev/null; then HAVE="$(sha256sum "$BIN_DIR/ask" | awk '{print $1}')"
+    elif command -v shasum >/dev/null;   then HAVE="$(shasum -a 256 "$BIN_DIR/ask" | awk '{print $1}')"
+    else HAVE=""; fi
+    if [ -n "$HAVE" ]; then
+      if [ "$HAVE" != "$WANT" ]; then err "Checksum mismatch — aborting."; rm -f "$BIN_DIR/ask"; exit 1; fi
+      ok "checksum verified"
+    else
+      say "• no sha256 tool found — continuing without verification"
+    fi
+  else
+    say "• checksum sidecar unavailable — continuing without verification"
   fi
   chmod +x "$BIN_DIR/ask"
   # also expose as ask-token-optimizer for direct invocation
@@ -177,7 +207,7 @@ if [ -d "$HOME/.claude" ]; then
   if [[ "${W:-Y}" =~ ^[Yy] ]]; then
     mkdir -p "$HOOKS_DIR"
     # copy hook scripts from SDK if present, else download
-    for HK in ask-rewrite.sh ask-filter.sh ask-rewrite.py ask-filter.py; do
+    for HK in ask-rewrite.sh ask-filter.sh ask-rewrite.py ask-filter.py ato_telemetry.py; do
       SRC="$SCRIPT_DIR/../hooks/$HK"
       if [ -f "$SRC" ]; then
         install -m 0755 "$SRC" "$HOOKS_DIR/$HK"
