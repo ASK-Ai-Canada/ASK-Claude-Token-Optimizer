@@ -1,31 +1,38 @@
-# ASK-Token-Optimizer — Windows Installation (Native, No WSL)
+# ASK Token Optimizer — Windows Installation (Native, No WSL)
 
 ## Prerequisites
 
-1. **Rust toolchain** — Install from https://rustup.rs
-   - Download and run `rustup-init.exe`
-   - Choose "Proceed with standard installation"
-   - Restart your terminal after install
+1. **PowerShell** (ships with Windows — use PowerShell, not cmd)
+2. **Python 3.8+** — the Claude Code hooks are Python (`winget install Python.Python.3.12`)
+3. **Claude Code** — installed and working
 
-2. **Git** — Install from https://git-scm.com/download/win
-   - Or use `winget install Git.Git`
+No Rust, no build step — the installer fetches the pre-built, checksum-verified binary from the latest GitHub Release.
 
-3. **Claude Code** — Must be installed and working
+## Install (recommended)
 
-## Install (Pre-Built Binary — recommended)
+Clone or download this repository, then from PowerShell in the repo folder:
 
-The SDK ships a release binary at `builds\windows-x86_64\ask-token-optimizer.exe`. From PowerShell, in the unpacked SDK directory:
+```powershell
+.\install.ps1
+```
+
+The installer walks you through:
+
+- **License** — clickwrap (Community: free under USD $100K annual revenue · Commercial above).
+- **Registration** — email + name; commercial adds company, seats, and a **required billing currency (CAD or USD)**. CAD adds 15% HST as a separate line; USD is a foreign sale, no CA tax. Commercial receives a card-capture link — **first month free**, seat count adjustable right on the checkout page.
+- **Binary** — downloaded from `releases/latest` (pin a version with `$env:ATO_VERSION="vX.Y.Z"`), SHA-256 verified against the release sidecar, installed to `%USERPROFILE%\.local\bin` as `ask.exe` + `ask-token-optimizer.exe`, added to your user PATH persistently.
+- **Hooks** — staged to `%USERPROFILE%\.claude\hooks` and, with your consent, wired into Claude Code's `settings.json` (a `.bak` is kept).
+
+If registration can't reach the server during install, it is saved to `%USERPROFILE%\.ask\license.json` and the app completes it automatically in the background.
+
+## Manual install (no script)
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.local\bin" | Out-Null
+$u = "https://github.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/releases/latest/download/ask-token-optimizer-windows-x86_64.exe"
+Invoke-WebRequest -Uri $u -OutFile "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe" -UseBasicParsing
+Copy-Item "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe" "$env:USERPROFILE\.local\bin\ask.exe"
 
-# Copy the canonical binary
-Copy-Item "builds\windows-x86_64\ask-token-optimizer.exe" "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe"
-
-# Short-alias copy for ergonomic invocation: type `ask` instead of `ask-token-optimizer`
-Copy-Item "builds\windows-x86_64\ask-token-optimizer.exe" "$env:USERPROFILE\.local\bin\ask.exe"
-
-# Add to PATH (persistent, user-level)
 $binPath = "$env:USERPROFILE\.local\bin"
 $current = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($current -notlike "*$binPath*") {
@@ -33,187 +40,45 @@ if ($current -notlike "*$binPath*") {
     $env:Path += ";$binPath"
 }
 
-# Verify
-ask-token-optimizer --version
-ask gain
+ask --version
 ```
 
-## Install from Source (optional)
-
-Open **PowerShell** (not CMD):
-
-```powershell
-# Clone the repo (replace <repo-url> with the URL you received from your provider)
-git clone <repo-url>
-cd ASK-Token-Optimizer
-
-# Build release binary
-cargo build --release
-
-# Create install directory
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.local\bin"
-
-# Copy binary
-Copy-Item "target\release\ask-token-optimizer.exe" "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe"
-
-# Add to PATH (persistent, user-level)
-$binPath = "$env:USERPROFILE\.local\bin"
-$currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($currentPath -notlike "*$binPath*") {
-    [Environment]::SetEnvironmentVariable("Path", "$currentPath;$binPath", "User")
-    $env:Path += ";$binPath"
-}
-
-# Verify
-ask-token-optimizer --version
-```
-
-## Configure Claude Code Hook
-
-### PostToolUse Hook (output compression)
-
-Create the hook directory and script:
-
-```powershell
-# Create hooks directory
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\hooks"
-
-# Create the PostToolUse hook (PowerShell script)
-@'
-#!/usr/bin/env pwsh
-# ASK-Token-Optimizer — PostToolUse hook (Windows)
-# Filters command output through semantic compression
-
-$optimizer = "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe"
-if (Test-Path $optimizer) {
-    $input | & $optimizer --hook
-} else {
-    $input
-}
-'@ | Set-Content "$env:USERPROFILE\.claude\hooks\ask-filter.ps1"
-```
-
-Then add to your Claude Code settings (`~/.claude/settings.json`):
+Then wire the hooks — `~/.claude/settings.json`, Windows command form:
 
 ```json
 {
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File %USERPROFILE%\\.claude\\hooks\\ask-filter.ps1"
-          }
-        ]
-      }
-    ]
+    "PreToolUse":  [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "python %USERPROFILE%\\.claude\\hooks\\ask-rewrite.py" } ] } ],
+    "PostToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "python %USERPROFILE%\\.claude\\hooks\\ask-filter.py" } ] } ]
   }
 }
 ```
 
-### PreToolUse Hook (command rewriting)
+(The hook scripts live in this repo under `hooks\` — copy them to `%USERPROFILE%\.claude\hooks\`.)
 
-The PreToolUse rewrite hook requires `jq`. Install it:
+## Verify
 
-```powershell
-winget install jqlang.jq
-```
-
-Create the rewrite hook:
+Open a **new** PowerShell window (PATH refresh), restart Claude Code, run a few commands, then:
 
 ```powershell
-@'
-#!/usr/bin/env pwsh
-# ASK-Token-Optimizer — PreToolUse hook (Windows)
-# Rewrites commands to use ask-token-optimizer for token savings
-
-$input_json = $input | ConvertFrom-Json
-$cmd = $input_json.tool_input.command
-
-if (-not $cmd) { exit 0 }
-
-$optimizer = "$env:USERPROFILE\.local\bin\ask-token-optimizer.exe"
-if (-not (Test-Path $optimizer)) { exit 0 }
-
-try {
-    $rewritten = & $optimizer rewrite $cmd 2>$null
-    if ($LASTEXITCODE -ne 0 -or $rewritten -eq $cmd) { exit 0 }
-
-    $input_json.tool_input.command = $rewritten
-    @{
-        hookSpecificOutput = @{
-            hookEventName = "PreToolUse"
-            permissionDecision = "allow"
-            permissionDecisionReason = "ASK auto-rewrite"
-            updatedInput = $input_json.tool_input
-        }
-    } | ConvertTo-Json -Depth 5
-} catch {
-    exit 0
-}
-'@ | Set-Content "$env:USERPROFILE\.claude\hooks\ask-rewrite.ps1"
+ask audit
 ```
 
-Add to settings:
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File %USERPROFILE%\\.claude\\hooks\\ask-rewrite.ps1"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-## Verify Installation
+## Updating
 
 ```powershell
-# Check binary
-ask-token-optimizer --version
-
-# Test compression
-echo "test output with ANSI codes and noise" | ask-token-optimizer --hook
-
-# Check Claude Code sees the hook
-# Restart Claude Code, then run any command — check if output is compressed
-```
-
-## Serve Mode (run as HTTP service)
-
-```powershell
-# Run the optimizer as an HTTP service on port 8095
-ask-token-optimizer serve --port 8095
-
-# Test
-Invoke-RestMethod -Method POST -Uri "http://localhost:8095/v1/compress/output" `
-  -ContentType "application/json" `
-  -Body '{"content": "test content with noise", "language": "text"}'
+ask update          # self-update from the latest release, checksum-verified
+ask update -check   # see what's available without changing anything
 ```
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `cargo` not found | Restart terminal after Rust install, or run `$env:Path += ";$env:USERPROFILE\.cargo\bin"` |
-| Link errors during build | Install Visual Studio Build Tools: `winget install Microsoft.VisualStudio.2022.BuildTools` |
-| Hook not firing | Restart Claude Code after adding hooks to settings.json |
-| Binary not found | Verify `$env:USERPROFILE\.local\bin` is in your PATH |
-| Permission denied on hook | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` |
+| Symptom | Fix |
+|---|---|
+| `ask` not recognized | Open a new PowerShell window (PATH refresh) |
+| Hooks not firing | Restart Claude Code after wiring `settings.json` |
+| `ask audit` shows 0 | Run a few commands in Claude Code first, then re-check |
+| `python` not found (hooks) | Install Python 3 and re-open the terminal |
+| SmartScreen prompt on first run | Binary is unsigned — verify the SHA-256 against the release `.sha256` sidecar, then allow |
 
-## Notes
-
-- No WSL required — builds and runs natively on Windows
-- Uses MSVC toolchain (default Rust on Windows)
-- Stats DB stored at `%USERPROFILE%\.ask-token-optimizer\stats.db`
-- Config at `%USERPROFILE%\.ask-token-optimizer\config.toml`
+Questions: licensing@ask-ai.ca — ASK-Ai Team Canada
