@@ -1,4 +1,4 @@
-# ASK Token Optimizer — Windows Installer
+﻿# ASK Token Optimizer — Windows Installer
 # Brand: ASK-Ai · 2026 Executive Style
 #
 # Run from PowerShell (NOT cmd):
