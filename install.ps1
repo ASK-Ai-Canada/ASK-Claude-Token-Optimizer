@@ -188,16 +188,22 @@ if (Test-Path $localSdk) {
   $base = if ($tag -eq "latest") { "https://github.com/$Repo/releases/latest/download" } else { "https://github.com/$Repo/releases/download/$tag" }
   Write-Host "     ${dim}downloading $AssetName ($tag)...${reset}"
   Invoke-WebRequest -Uri "$base/$AssetName" -OutFile $exeTmp -UseBasicParsing
-  # Verify against the .sha256 sidecar (format: "<hex>  <name>")
+  # Verify against the .sha256 sidecar (format: "<hex>  <name>").
+  # GitHub serves assets as octet-stream → .Content is byte[]; decode before parsing.
   try {
-    $shaLine = (Invoke-WebRequest -Uri "$base/$AssetName.sha256" -UseBasicParsing).Content
-    $want = ([string]$shaLine).Trim().Split(' ')[0].ToLower()
-    $have = (Get-FileHash $exeTmp -Algorithm SHA256).Hash.ToLower()
-    if ($want -and ($want -ne $have)) {
-      Write-Host "     ${gold}!${reset} checksum mismatch — aborting install."
-      Remove-Item $exeTmp -Force; exit 1
+    $shaRaw = (Invoke-WebRequest -Uri "$base/$AssetName.sha256" -UseBasicParsing).Content
+    if ($shaRaw -is [byte[]]) { $shaRaw = [Text.Encoding]::ASCII.GetString($shaRaw) }
+    $want = "$shaRaw".Trim().Split(' ')[0].ToLower()
+    if ($want -match '^[0-9a-f]{64}$') {
+      $have = (Get-FileHash $exeTmp -Algorithm SHA256).Hash.ToLower()
+      if ($want -ne $have) {
+        Write-Host "     ${gold}!${reset} checksum mismatch — aborting install."
+        Remove-Item $exeTmp -Force; exit 1
+      }
+      Tick "checksum verified"
+    } else {
+      Write-Host "     ${dim}checksum sidecar unreadable — continuing without verification${reset}"
     }
-    Tick "checksum verified"
   } catch {
     Write-Host "     ${dim}checksum sidecar unavailable — continuing without verification${reset}"
   }
