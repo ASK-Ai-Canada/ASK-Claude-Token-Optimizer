@@ -138,9 +138,16 @@ to source.
 ================================================================================
 7. PRIVACY
 ================================================================================
-The Software runs locally and offline. It does not collect, transmit, or process
-personal data on Licensor's behalf, except optional, user-configured webhook
-audit events that You control and direct to endpoints You operate.
+The optimization engine runs entirely locally and offline: the commands and
+output it processes never leave Your machine and are never used to train
+anything.
+
+Optional registration (name, email, license details) and token-savings totals
+(tokens saved, run count, operating system, version — never Your commands,
+code, or their content) are used solely to administer Your license. Reporting
+honors DO_NOT_TRACK and the telemetry configuration flag. Records are hosted
+in Canada (EU adequacy decision); access, correction, or deletion at any time:
+licensing@ask-ai.ca.
 
 ================================================================================
 8. DISCLAIMER OF WARRANTY
@@ -205,7 +212,8 @@ SUMMARY (non-binding, for convenience only)
     by splitting revenue across related companies.
   • Commercial licensees must certify their revenue annually and are subject to
     an annual audit right.
-  • One codebase. Local, offline, no data collection.
+  • One codebase. The engine is local and offline — only license details and
+    token-savings totals are ever reported; never your commands or code.
   • The binding terms are Sections 0–12 above; this summary does not modify them.
   • This is not legal advice. Have qualified counsel review before relying on
     this license for material commercial obligations.
