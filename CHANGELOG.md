@@ -10,6 +10,10 @@ What's improved, version by version. Check the version you're on with `ask --ver
 - **Community & non-profit support.** Free-tier installs can add an optional, tax-deductible donation to the Atlantic Centre of Excellence for Advanced Technology & Intelligence (ACATI) Foundation — 100% goes to the Foundation, funding tech literacy in underserved Atlantic Canadian communities.
 - `ask gain` works again — it now runs `ask audit` (its name since 0.5.0) instead of erroring, in case the old command is in your muscle memory.
 
+## 0.5.1 — 2026-07-02
+- **Refined install flow** — registration retries and self-completes in the background if the first run hits a network blip, so you are never left half-installed.
+- `ask gain` is now `ask audit` — clearer name for the savings command (same flags).
+
 ## 0.5.0 — 2026-07-01
 
 - **New: `ask update`.** One command pulls the latest release (checksum-verified) and installs it. It also compares the release's hooks against yours and **asks before changing anything** — nothing is ever wired behind your back.
