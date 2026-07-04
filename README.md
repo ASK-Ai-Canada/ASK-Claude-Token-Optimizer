@@ -72,10 +72,16 @@ A single codebase. Two licenses. The engine is identical in both tiers — nothi
 
 ## Getting started
 
-Download the latest release, then from that folder:
+**Homebrew** (macOS · Linux) — one line:
 
 ```bash
-./setup.sh        # Linux · macOS · Pi4
+brew install ASK-Ai-Canada/tap/ask-token-optimizer
+```
+
+Or download the latest release, then from that folder:
+
+```bash
+./setup.sh        # Linux · macOS · Pi4 · Alpine/musl
 .\install.ps1     # Windows (PowerShell)
 ```
 

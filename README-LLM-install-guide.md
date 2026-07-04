@@ -24,6 +24,11 @@ Offer a scan instead of guessing: *"Want me to scan your PATH for writable bin d
 (`ASK_HOME` [state, `~/.ask`] and `HOOKS_DIR` [`~/.claude/hooks`] are overridable too, but defaults are right — don't ask unless raised.)
 
 ## Phase 2 — Install
+**Homebrew (macOS/Linux)** — if the user has `brew`, prefer it: leanest path, no `BIN_DIR`/PATH step, no Gatekeeper prompt on macOS.
+```bash
+brew install ASK-Ai-Canada/tap/ask-token-optimizer
+```
+Otherwise the installer (auto-selects the Alpine/musl or glibc binary):
 ```bash
 BIN_DIR="<chosen>" ./setup.sh --accept-license          # POSIX: Linux / macOS / Pi
 ```

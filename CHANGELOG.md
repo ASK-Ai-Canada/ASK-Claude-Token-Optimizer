@@ -4,6 +4,12 @@ What's improved, version by version. Check the version you're on with `ask --ver
 
 ---
 
+## 0.5.2 — 2026-07-04
+- **Install with Homebrew.** `brew install ASK-Ai-Canada/tap/ask-token-optimizer` on macOS and Linux — and on macOS it installs with no Gatekeeper warning.
+- **Runs on Alpine and every Linux distro now.** New static builds work on musl systems (Alpine, minimal containers) as well as glibc (Debian, Ubuntu, Fedora, Arch); the installer picks the right one for you.
+- **Community & non-profit support.** Free-tier installs can add an optional, tax-deductible donation to the Atlantic Centre of Excellence for Advanced Technology & Intelligence (ACATI) Foundation — 100% goes to the Foundation, funding tech literacy in underserved Atlantic Canadian communities.
+- `ask gain` works again — it now runs `ask audit` (its name since 0.5.0) instead of erroring, in case the old command is in your muscle memory.
+
 ## 0.5.0 — 2026-07-01
 
 - **New: `ask update`.** One command pulls the latest release (checksum-verified) and installs it. It also compares the release's hooks against yours and **asks before changing anything** — nothing is ever wired behind your back.
