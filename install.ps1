@@ -264,15 +264,21 @@ try { $Version = ((& "$installDir\ask.exe" --version) -replace '[^0-9.]', '').Tr
 Tick "ask-token-optimizer.exe  ->  $installDir  $(if ($Version) { "(v$Version)" })"
 Tick "ask.exe                  ->  short alias"
 
-# ─── 4. PATH ────────────────────────────────────────────────────────────────
+# ─── 4. PATH (persistent, current-user scope - no elevation needed) ────────
 Step 3 "Adding to user PATH"
 $current = [Environment]::GetEnvironmentVariable("Path", "User")
 if (-not $current) { $current = "" }
-if ($current -notlike "*$installDir*") {
-  $newPath = ("$current;$installDir").TrimStart(';')
+# Exact-segment, case-insensitive dedupe (Windows paths are case-insensitive).
+# A plain substring/-like check would also true-positive on e.g. an unrelated
+# "...\.local\bin2" sibling folder, so split on ';' and compare segments.
+$pathSegments = $current -split ';' | Where-Object { $_ -ne '' }
+$alreadyOnPath = $pathSegments | Where-Object { $_.TrimEnd('\') -ieq $installDir.TrimEnd('\') }
+if (-not $alreadyOnPath) {
+  $newPath = (@($pathSegments) + $installDir) -join ';'
   [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
   $env:Path += ";$installDir"
-  Tick "appended $installDir"
+  Tick "appended $installDir to your User PATH"
+  Write-Host "     ${dim}restart your terminal (or open a new shell) for 'ask' to be found on PATH${reset}"
 } else {
   Tick "already on PATH"
 }

@@ -11,6 +11,8 @@ REGISTER_URL="${ATO_REGISTER_URL:-https://api.ask-ai.ca/v1/ato}"
 GITHUB_RAW="https://raw.githubusercontent.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/main"
 REPO_SLUG="ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
 EULA_VERSION="1.1"
+# stamped by scripts/release.sh sync from Cargo.toml — the version this installer ships with
+INSTALLER_VER="0.5.2"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 say(){ printf '%s\n' "$*"; }
@@ -80,17 +82,50 @@ MACHINE_ID="$( (hostname; uname -a) 2>/dev/null | { shasum 2>/dev/null || sha1su
 [ -n "$MACHINE_ID" ] || MACHINE_ID="unknown"
 OS="$(uname -s)"; NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
 PLAN="$([ "$TIER" = commercial ] && echo seat-25-yearly || echo free)"
-PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","currency":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","ver":"INSTALLER"}' \
-  "$EMAIL" "$FULLNAME" "$TIER" "${COMPANY:-}" "${SEATS:-}" "${CURRENCY:-}" "$PLAN" "$TELEMETRY" "$EULA_VERSION" "$NOW" "$MACHINE_ID" "$OS")
+# 3b. community give-back — optional donation to the ACATI Foundation (free tier only)
+DONATE_AMOUNT=""; DONATE_SEATS=""; DONATE_TARGET=""
+if [ "$TIER" = "free" ]; then
+  say ""
+  say "  ★ Give back (optional) — you're on the free community tier."
+  say "    ASK Token Optimizer is free for you. If it's helping, consider a yearly gift to the"
+  say "    Atlantic Centre of Excellence for Advanced Technology & Intelligence (ACATI)"
+  say "    Foundation — a registered non-profit bringing tech literacy to community and business"
+  say "    leaders in underserved Atlantic Canadian communities."
+  say "    100% goes to the Foundation — ASK-AI covers the processing and keeps nothing."
+  say "    Suggested CAD \$25 / seat / year; give any amount you like (minimum \$25)."
+  say "    Learn more: https://acati.ca"
+  read -r -p "  Add an optional tax-deductible donation? [y/N]: " _D
+  if [[ "${_D:-N}" =~ ^[Yy] ]]; then
+    read -r -p "  Seats to sponsor [1]: " DONATE_SEATS
+    [[ "${DONATE_SEATS:-}" =~ ^[0-9]+$ ]] && [ "$DONATE_SEATS" -ge 1 ] || DONATE_SEATS=1
+    _SUG=$(( 25 * DONATE_SEATS ))
+    while :; do
+      read -r -p "  Annual gift in CAD (suggested \$${_SUG}, minimum \$25): " DONATE_AMOUNT
+      [[ "${DONATE_AMOUNT:-}" =~ ^[0-9]+$ ]] && [ "$DONATE_AMOUNT" -ge 25 ] && break
+      say "    Please enter a whole dollar amount of \$25 or more."
+    done
+    DONATE_TARGET="acati-foundation"
+    say ""
+    say "  ★ Thank you! We'll email ${EMAIL} a secure link to complete your CAD \$${DONATE_AMOUNT} gift"
+    say "    to the ACATI Foundation — 100% to the Foundation, and your receipt is tax-deductible."
+    say ""
+  fi
+fi
+
+PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","currency":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","donate_amount":"%s","donate_seats":"%s","donate_target":"%s","ver":"$INSTALLER_VER"}' \
+  "$EMAIL" "$FULLNAME" "$TIER" "${COMPANY:-}" "${SEATS:-}" "${CURRENCY:-}" "$PLAN" "$TELEMETRY" "$EULA_VERSION" "$NOW" "$MACHINE_ID" "$OS" "${DONATE_AMOUNT:-}" "${DONATE_SEATS:-}" "$DONATE_TARGET")
 INSTALL_TOKEN=""
 CHECKOUT_URL=""
-if command -v curl >/dev/null; then
+if command -v curl >/dev/null || command -v wget >/dev/null; then
   # 3 attempts with short backoff; if all fail, the app self-heals the
   # registration in the background (license.json keeps the payload).
   RESP=""
   for _try in 1 2 3; do
-    RESP="$(curl -fsS -m 12 -X POST "$REGISTER_URL/register" \
-      -H 'content-type: application/json' -d "$PAYLOAD" 2>/dev/null || true)"
+    if command -v curl >/dev/null; then
+      RESP="$(curl -fsS -m 12 -X POST "$REGISTER_URL/register" -H 'content-type: application/json' -d "$PAYLOAD" 2>/dev/null || true)"
+    else
+      RESP="$(wget -qO- --timeout=12 --header='content-type: application/json' --post-data="$PAYLOAD" "$REGISTER_URL/register" 2>/dev/null || true)"
+    fi
     [ -n "$RESP" ] && break
     [ "$_try" -lt 3 ] && sleep $(( _try * 2 ))
   done
@@ -114,7 +149,7 @@ fi
 # 5. local license record ----------------------------------------------------------
 mkdir -p "$ASK_HOME" "$BIN_DIR"
 cat > "$LICENSE_JSON" <<EOF
-{"email":"$EMAIL","name":"$FULLNAME","tier":"$TIER","company":"${COMPANY:-}","seats":"${SEATS:-}","currency":"${CURRENCY:-}","telemetry":"$TELEMETRY","eula_version":"$EULA_VERSION","accepted_at":"$NOW","machine_id":"$MACHINE_ID","install_token":"$INSTALL_TOKEN"}
+{"email":"$EMAIL","name":"$FULLNAME","tier":"$TIER","company":"${COMPANY:-}","seats":"${SEATS:-}","currency":"${CURRENCY:-}","telemetry":"$TELEMETRY","eula_version":"$EULA_VERSION","accepted_at":"$NOW","machine_id":"$MACHINE_ID","donate_amount":"$DONATE_AMOUNT","donate_seats":"$DONATE_SEATS","donate_target":"$DONATE_TARGET","install_token":"$INSTALL_TOKEN"}
 EOF
 ok "license record written to $LICENSE_JSON"
 
@@ -148,6 +183,11 @@ case "$_os-$_arch" in
     fi
     PLATFORM=""
     ;;
+esac
+
+# Alpine/musl hosts cannot run the glibc binary — select the static-musl asset.
+case "$PLATFORM" in
+  linux-*) if ls /lib/ld-musl-* >/dev/null 2>&1 || { command -v ldd >/dev/null && ldd --version 2>&1 | grep -qi musl; }; then PLATFORM="$PLATFORM-musl"; fi ;;
 esac
 
 if [ -n "$PLATFORM" ]; then
