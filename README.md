@@ -49,7 +49,7 @@ That's not a Claude problem. That's a plumbing problem. And it's solvable before
 
 It sits between your terminal and Claude Code as two lightweight hooks. Before Claude sees a command's output, the optimizer filters it — stripping noise, collapsing repetition, keeping only what Claude actually needs to reason about. The output is structurally identical; the token count is not.
 
-<img src="assets/how-it-works.svg" alt="How it works — Claude Code → ATO → Your Shell" width="100%"/>
+<img src="assets/how-it-works.svg" alt="How it works — Your Shell → ATO → Claude Code" width="100%"/>
 
 No API key. No cloud. No account. The optimizer runs locally, processes output on your machine, and never touches the network.
 
