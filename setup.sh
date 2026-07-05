@@ -10,9 +10,19 @@ LICENSE_JSON="$ASK_HOME/license.json"
 REGISTER_URL="${ATO_REGISTER_URL:-https://api.ask-ai.ca/v1/ato}"
 GITHUB_RAW="https://raw.githubusercontent.com/ASK-Ai-Canada/ASK-Claude-Token-Optimizer/main"
 REPO_SLUG="ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
-EULA_VERSION="1.1"
+EULA_VERSION="1.2"
 # stamped by scripts/release.sh sync from Cargo.toml — the version this installer ships with
 INSTALLER_VER="0.5.2"
+
+# ==ATO-STRINGS BEGIN== (generated from installer-strings.toml - edit there, run tools/gen_installer_strings.py)
+S_TAGLINE='token filtering for Claude Code'
+S_LIC_FREE='Free for individuals and companies under CAD $100,000/year revenue.'
+S_LIC_COMMERCIAL='Companies at or above CAD $100,000/year revenue need a paid Commercial License.'
+S_LIC_TERMS='Full terms: LICENSE in the repository. Governing law: Canada.'
+S_REVENUE_PROMPT='Is your organization'\''s annual gross revenue UNDER CAD $100,000? [Y/n]'
+S_NEXT_SHELL='Open a new PowerShell window'
+S_NEXT_CLAUDE='Restart Claude Code'
+# ==ATO-STRINGS END==
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 say(){ printf '%s\n' "$*"; }
@@ -31,7 +41,7 @@ read -r -p "Do you accept the ASK Token Optimizer license? Type 'I AGREE' to con
 read -r -p "Work email (for your free license + weekly savings report): " EMAIL
 [ -n "$EMAIL" ] && [[ "$EMAIL" == *@* ]] || { err "A valid email is required."; exit 1; }
 read -r -p "Full name (optional, press Enter to skip): " FULLNAME
-read -r -p "Is your organization's annual gross revenue UNDER USD \$100,000? [Y/n]: " R
+read -r -p "${S_REVENUE_PROMPT}: " R
 if [[ "${R:-Y}" =~ ^[Nn] ]]; then
   TIER="commercial"
   say ""
@@ -82,7 +92,7 @@ MACHINE_ID="$( (hostname; uname -a) 2>/dev/null | { shasum 2>/dev/null || sha1su
 [ -n "$MACHINE_ID" ] || MACHINE_ID="unknown"
 OS="$(uname -s)"; NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
 PLAN="$([ "$TIER" = commercial ] && echo seat-25-yearly || echo free)"
-# 3b. community give-back — optional donation to the ACATI Foundation (free tier only)
+# ==ATO-CARD donation BEGIN== (generated from installer-strings.toml - edit there, run tools/gen_installer_strings.py)
 DONATE_AMOUNT=""; DONATE_SEATS=""; DONATE_TARGET=""
 if [ "$TIER" = "free" ]; then
   say ""
@@ -111,6 +121,7 @@ if [ "$TIER" = "free" ]; then
     say ""
   fi
 fi
+# ==ATO-CARD donation END==
 
 PAYLOAD=$(printf '{"email":"%s","name":"%s","tier":"%s","company":"%s","seats":"%s","currency":"%s","plan":"%s","telemetry":"%s","eula_version":"%s","accepted_at":"%s","machine_id":"%s","os":"%s","donate_amount":"%s","donate_seats":"%s","donate_target":"%s","ver":"$INSTALLER_VER"}' \
   "$EMAIL" "$FULLNAME" "$TIER" "${COMPANY:-}" "${SEATS:-}" "${CURRENCY:-}" "$PLAN" "$TELEMETRY" "$EULA_VERSION" "$NOW" "$MACHINE_ID" "$OS" "${DONATE_AMOUNT:-}" "${DONATE_SEATS:-}" "$DONATE_TARGET")

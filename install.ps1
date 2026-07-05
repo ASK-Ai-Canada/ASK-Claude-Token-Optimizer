@@ -11,7 +11,18 @@
 #   3. Installs to %USERPROFILE%\.local\bin\ + adds to user PATH (persistent)
 #   4. Stages hook templates (fetched from the repo if not local) + offers to wire them
 
-param([switch]$AcceptLicense)
+param(
+  [switch]$AcceptLicense,
+  [string]$Email = "",
+  [string]$FullName = "",
+  [ValidateSet("", "free", "commercial")][string]$Tier = "",
+  [string]$Seats = "",
+  [string]$Currency = "",
+  [switch]$TelemetryOptOut,
+  [switch]$NonInteractive
+)
+# Headless = agent/CI mode: identity via params, zero prompts, fail fast on missing input.
+$Headless = $NonInteractive.IsPresent -or ($Email -ne "")
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
@@ -19,10 +30,20 @@ $ProgressPreference    = 'SilentlyContinue'
 # Older Windows defaults to TLS 1.0 - GitHub requires 1.2+. Harmless where already set.
 try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch {}
 
-$EulaVersion = "1.1"
+$EulaVersion = "1.2"
 $RegisterUrl = if ($env:ATO_REGISTER_URL) { $env:ATO_REGISTER_URL } else { "https://api.ask-ai.ca/v1/ato" }
 $Repo        = "ASK-Ai-Canada/ASK-Claude-Token-Optimizer"
 $AssetName   = "ask-token-optimizer-windows-x86_64.exe"
+
+# ==ATO-STRINGS BEGIN== (generated from installer-strings.toml - edit there, run tools/gen_installer_strings.py)
+$S_TAGLINE = 'token filtering for Claude Code'
+$S_LIC_FREE = 'Free for individuals and companies under CAD $100,000/year revenue.'
+$S_LIC_COMMERCIAL = 'Companies at or above CAD $100,000/year revenue need a paid Commercial License.'
+$S_LIC_TERMS = 'Full terms: LICENSE in the repository. Governing law: Canada.'
+$S_REVENUE_PROMPT = 'Is your organization''s annual gross revenue UNDER CAD $100,000? [Y/n]'
+$S_NEXT_SHELL = 'Open a new PowerShell window'
+$S_NEXT_CLAUDE = 'Restart Claude Code'
+# ==ATO-STRINGS END==
 
 # Brand colors - closest 24-bit ANSI to the 2026 Executive Style spec.
 $gold     = "$([char]27)[38;2;198;161;91m"   # #C6A15B Sovereign gold
@@ -56,7 +77,7 @@ function Banner {
   Write-Host "   ${gold}${gTL}${gBar}${gTR}${reset}"
   Write-Host "   ${gold}${gV}${reset}                                                         ${gold}${gV}${reset}"
   Write-Host "   ${gold}${gV}${reset}     ${gold}A S K${reset}   ${paleGold}Token Optimizer${reset}                       ${gold}${gV}${reset}"
-  Write-Host "   ${gold}${gV}${reset}     ${dim}token compression for Claude Code${reset}                ${gold}${gV}${reset}"
+  Write-Host "   ${gold}${gV}${reset}     ${dim}$($S_TAGLINE.PadRight(49))${reset}${gold}${gV}${reset}"
   Write-Host "   ${gold}${gV}${reset}                                                         ${gold}${gV}${reset}"
   Write-Host "   ${gold}${gBL}${gBar}${gBR}${reset}"
   Write-Host ""
@@ -93,26 +114,51 @@ Banner
 
 # ─── 1. License acceptance (clickwrap, before anything else) ────────────────
 if (-not $AcceptLicense) {
+  if ($Headless) { Write-Host "   Headless install requires -AcceptLicense. Aborting."; exit 1 }
   Write-Host "   ${charcoal}ASK Token Optimizer - Dual License (Community + Commercial)${reset}"
-  Write-Host "     ${dim}- Free for individuals and companies under USD `$100k annual gross revenue.${reset}"
-  Write-Host "     ${dim}- Companies at or above USD `$100k need a paid Commercial License.${reset}"
-  Write-Host "     ${dim}- Full terms: LICENSE in the repository. Governing law: Canada.${reset}"
+  Write-Host "     ${dim}- $S_LIC_FREE${reset}"
+  Write-Host "     ${dim}- $S_LIC_COMMERCIAL${reset}"
+  Write-Host "     ${dim}- $S_LIC_TERMS${reset}"
   Write-Host ""
   $reply = Read-Host "   Type 'accept' to agree to the LICENSE and continue"
   if ($reply -ne 'accept') { Write-Host "   License not accepted. Aborting."; exit 1 }
 }
 
 # ─── 2. Registration - identical contract to setup.sh ──────────────────────
+# Upgrade re-runs never re-interview a registered box (deployment-report fix #2).
+$SkipReg = $false; $existingLic = $null
+$licPath = Join-Path $askHome "license.json"
+if ((Test-Path $licPath) -and -not $Email) {
+  try { $existingLic = Get-Content $licPath -Raw | ConvertFrom-Json } catch {}
+  if ($existingLic -and $existingLic.email -and $existingLic.install_token) { $SkipReg = $true }
+}
 Write-Host ""
 Step 1 "Registration"
-$Email = ""
+$Company = ""
+if ($SkipReg) {
+  $Email = "$($existingLic.email)"; $FullName = "$($existingLic.name)"
+  $Tier = "$($existingLic.tier)"; $Company = "$($existingLic.company)"
+  $Seats = "$($existingLic.seats)"; $Currency = "$($existingLic.currency)"
+  if (-not $Tier) { $Tier = "free" }
+  Tick "already registered as $Email ($Tier) - skipping registration"
+}
+if (-not $SkipReg) {
 while ($Email -notmatch '@') {
+  if ($Headless) { Write-Host "     Headless install requires a valid -Email. Aborting."; exit 1 }
   $Email = (Read-Host "     Work email (for your free license + weekly savings report)").Trim()
 }
-$FullName = (Read-Host "     Full name (optional, press Enter to skip)").Trim()
+if (-not $Headless -and -not $FullName) { $FullName = (Read-Host "     Full name (optional, press Enter to skip)").Trim() }
 
+if (-not $Tier) { $Tier = "free" }
+if ($Headless) {
+  if ($Tier -eq 'commercial') {
+    if ($Seats -notmatch '^\d+$') { $Seats = "1" }
+    $Currency = $Currency.ToLower()
+    if ($Currency -ne 'cad' -and $Currency -ne 'usd') { Write-Host "     Headless commercial requires -Currency CAD or USD. Aborting."; exit 1 }
+  }
+} else {
 $Tier = "free"; $Company = ""; $Seats = ""; $Currency = ""
-$r = (Read-Host "     Is your organization's annual gross revenue UNDER USD `$100,000? [Y/n]").Trim()
+$r = (Read-Host "     $S_REVENUE_PROMPT").Trim()
 if ($r -match '^[Nn]') {
   $Tier = "commercial"
   Write-Host ""
@@ -134,6 +180,7 @@ if ($r -match '^[Nn]') {
   }
   Write-Host "     ${dim}${gStar} First month FREE - no charge for 30 days; cancel anytime before then.${reset}"
 }
+}
 
 # Telemetry - community: always on (the exchange for free use); paid: optional, default on.
 $Telemetry = "on"
@@ -142,11 +189,48 @@ if ($Tier -eq 'free') {
   Write-Host "     ${dim}Help us improve - anonymous savings stats keep the free tier free.${reset}"
   Write-Host "     ${dim}Private by design: only the totals you save are shared.${reset}"
 } else {
-  Write-Host ""
-  Write-Host "     [x] Help us improve - share anonymous savings stats. Private by design."
-  $to = (Read-Host "         Press Enter to keep enabled, or type 'no' to opt out").Trim()
-  if ($to -match '^[Nn]') { $Telemetry = "off" }
+  if ($Headless) {
+    if ($TelemetryOptOut) { $Telemetry = "off" }
+  } else {
+    Write-Host ""
+    Write-Host "     [x] Help us improve - share anonymous savings stats. Private by design."
+    $to = (Read-Host "         Press Enter to keep enabled, or type 'no' to opt out").Trim()
+    if ($to -match '^[Nn]') { $Telemetry = "off" }
+  }
 }
+# end of first-registration interview
+}
+
+# ==ATO-CARD donation BEGIN== (generated from installer-strings.toml - edit there, run tools/gen_installer_strings.py)
+$DonateAmount = ""; $DonateSeats = ""; $DonateTarget = ""
+if ($Tier -eq 'free' -and -not $Headless -and -not $SkipReg) {
+  Write-Host ""
+  Write-Host "  ${dim}★ Give back (optional) — you're on the free community tier.${reset}"
+  Write-Host "  ${dim}  ASK Token Optimizer is free for you. If it's helping, consider a yearly gift to the${reset}"
+  Write-Host "  ${dim}  Atlantic Centre of Excellence for Advanced Technology & Intelligence (ACATI)${reset}"
+  Write-Host "  ${dim}  Foundation — a registered non-profit bringing tech literacy to community and business${reset}"
+  Write-Host "  ${dim}  leaders in underserved Atlantic Canadian communities.${reset}"
+  Write-Host "  ${dim}  100% goes to the Foundation — ASK-AI covers the processing and keeps nothing.${reset}"
+  Write-Host "  ${dim}  Suggested CAD `$25 / seat / year; give any amount you like (minimum `$25).${reset}"
+  Write-Host "  ${dim}  Learn more: https://acati.ca${reset}"
+  $d = (Read-Host "  Add an optional tax-deductible donation? [y/N]").Trim()
+  if ($d -match '^[Yy]') {
+    $DonateSeats = (Read-Host "    Seats to sponsor [1]").Trim()
+    if ($DonateSeats -notmatch '^[0-9]+$' -or [int]$DonateSeats -lt 1) { $DonateSeats = "1" }
+    $sug = 25 * [int]$DonateSeats
+    while ($true) {
+      $DonateAmount = (Read-Host "    Annual gift in CAD (suggested `$$sug, minimum `$25)").Trim()
+      if ($DonateAmount -match '^[0-9]+$' -and [int]$DonateAmount -ge 25) { break }
+      Write-Host "      Please enter a whole dollar amount of `$25 or more."
+    }
+    $DonateTarget = "acati-foundation"
+    Write-Host ""
+    Write-Host "  ★ Thank you! We'll email $Email a secure link to complete your CAD `$$DonateAmount gift"
+    Write-Host "    to the ACATI Foundation — 100% to the Foundation, and your receipt is tax-deductible."
+    Write-Host ""
+  }
+}
+# ==ATO-CARD donation END==
 
 # Stable machine id: CIM product UUID, registry MachineGuid fallback, then hostname-only.
 $hwid = ""
@@ -163,9 +247,14 @@ try {
 $Now  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $Plan = if ($Tier -eq 'commercial') { "seat-25-yearly" } else { "free" }
 
+if ($SkipReg) {
+  $InstallToken = "$($existingLic.install_token)"; $CheckoutUrl = ""
+  Tick "existing license kept ($licPath)"
+} else {
 $payload = @{
   email = $Email; name = $FullName; tier = $Tier; company = $Company; seats = $Seats
   currency = $Currency; plan = $Plan; telemetry = $Telemetry; eula_version = $EulaVersion
+  donate_amount = $DonateAmount; donate_seats = $DonateSeats; donate_target = $DonateTarget
   accepted_at = $Now; machine_id = $MachineId; os = "Windows"; ver = "INSTALLER"
 } | ConvertTo-Json -Compress
 
@@ -205,6 +294,7 @@ New-Item -ItemType Directory -Force -Path $askHome | Out-Null
   accepted_at = $Now; machine_id = $MachineId; install_token = $InstallToken
 } | ConvertTo-Json -Compress | Set-Content -Path (Join-Path $askHome "license.json") -Encoding UTF8
 Tick "license record written to $askHome\license.json"
+}
 
 # Paid opt-out persisted to the binary's config (%APPDATA%\ask\config.toml).
 if ($Telemetry -eq 'off') {
@@ -264,6 +354,20 @@ try { $Version = ((& "$installDir\ask.exe" --version) -replace '[^0-9.]', '').Tr
 Tick "ask-token-optimizer.exe  ->  $installDir  $(if ($Version) { "(v$Version)" })"
 Tick "ask.exe                  ->  short alias"
 
+# Git Bash entry: a 4-line sh shim, NOT a PE copy. MSYS2_ARG_CONV_EXCL='*' stops
+# Git Bash path-conversion from mangling args (the C:/Program ssh bug). Written via
+# .NET file APIs (LF, no BOM) - writing it from MSYS would clobber ask.exe.
+$shimPath = Join-Path $installDir "ask"
+$shim = "#!/bin/sh`n# ASK Token Optimizer - Git Bash entry (do not edit; installer-owned)`nMSYS2_ARG_CONV_EXCL='*' exec `"`$(dirname `"`$0`")/ask.exe`" `"`$@`"`n"
+[IO.File]::WriteAllText($shimPath, $shim, (New-Object System.Text.UTF8Encoding($false)))
+$shimLen = (Get-Item $shimPath).Length
+$exeLen  = (Get-Item (Join-Path $installDir "ask.exe")).Length
+if ($shimLen -lt 1KB -and $exeLen -gt 1MB) {
+  Tick "ask (Git Bash shim)      ->  MSYS-safe entry ($shimLen B)"
+} else {
+  Write-Host "   ! shim/exe size check failed (shim=$shimLen exe=$exeLen) - Git Bash entry may be wrong"
+}
+
 # ─── 4. PATH (persistent, current-user scope - no elevation needed) ────────
 Step 3 "Adding to user PATH"
 $current = [Environment]::GetEnvironmentVariable("Path", "User")
@@ -301,6 +405,16 @@ if (Test-Path "hooks") {
   else { Write-Host "     ${dim}could not fetch all hooks ($fetched/3) - clone the repo and re-run, or copy hooks\ manually${reset}" }
 }
 
+# Windows-readable docs: stage plain-text copies the OS opens natively
+$docsDir = Join-Path $env:USERPROFILE ".ask\docs"
+New-Item -ItemType Directory -Force -Path $docsDir | Out-Null
+foreach ($doc in @(@("INSTALL-WINDOWS.md","INSTALL-WINDOWS.txt"), @("README.md","README.txt"))) {
+  try {
+    Invoke-WebRequest -UseBasicParsing -TimeoutSec 60 -Uri "https://raw.githubusercontent.com/$Repo/main/$($doc[0])" -OutFile (Join-Path $docsDir $doc[1])
+  } catch {}
+}
+if (Test-Path (Join-Path $docsDir "INSTALL-WINDOWS.txt")) { Tick "docs staged -> $docsDir (plain text)" }
+
 # ─── Verification ────────────────────────────────────────────────────────
 Write-Host ""
 Write-Host "   ${gold}$($gH * 3) Verification $($gH * 44)${reset}"
@@ -330,7 +444,7 @@ if (-not $settingsPath) {
   if ($content -like "*ask-rewrite*") {
     Tick "Hooks already wired in $settingsPath"
   } else {
-    $wire = Read-Host "   Wire optimizer hooks into settings.json now? [y/N]"
+    $wire = if ($Headless) { "n" } else { Read-Host "   Wire optimizer hooks into settings.json now? [y/N]" }
     if ($wire -eq 'y' -or $wire -eq 'Y') {
       Copy-Item $settingsPath "$settingsPath.bak"
       $rw = "$hookDir\ask-rewrite.py"
@@ -365,9 +479,9 @@ print('ok')
 Write-Host ""
 Write-Host "   ${gold}$($gH * 3) You are set up $($gH * 42)${reset}"
 Write-Host ""
-Write-Host "   1.  ${charcoal}Open a new PowerShell window${reset}  (so PATH refreshes)"
-Write-Host "   2.  ${charcoal}Restart Claude Code${reset}"
+Write-Host "   1.  $S_NEXT_SHELL  (so PATH refreshes)"
+Write-Host "   2.  $S_NEXT_CLAUDE"
 Write-Host "   3.  Run  ${gold}ask audit${reset}  after a few commands to see your savings"
 Write-Host ""
-Write-Host "   ${dim}Docs:${reset}  README.md  $gMid  INSTALL-WINDOWS.md"
+Write-Host "   ${dim}Docs:${reset}  $docsDir\INSTALL-WINDOWS.txt  $gMid  README.txt"
 Write-Host ""
