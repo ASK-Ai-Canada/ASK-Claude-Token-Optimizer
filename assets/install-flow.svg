@@ -34,7 +34,7 @@
     <path d="M39 154 l4 4 l7 -8" stroke="#3FB68B" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0">
       <animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.4;0.98" dur="16s" repeatCount="indefinite"/>
     </path>
-    <text x="62" y="159">free tier — under $100k</text>
+    <text x="62" y="159">free tier — under CAD $100k</text>
     <!-- box 4 -->
     <rect x="36" y="186" width="16" height="16" rx="3" fill="none" stroke="url(#gold)" stroke-width="1.6"/>
     <path d="M39 194 l4 4 l7 -8" stroke="#3FB68B" stroke-width="2.6" fill="none" stroke-linecap="round" opacity="0">
@@ -67,7 +67,7 @@
       <text x="376" y="172" fill="#E6EDF3" opacity="0">Type 'accept' to agree to the LICENSE: <tspan fill="#3FB68B">accept</tspan><animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.125;0.98" dur="16s" repeatCount="indefinite"/></text>
       <text x="376" y="196" fill="url(#gold)" opacity="0">* Step 1  Registration<animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.2125;0.98" dur="16s" repeatCount="indefinite"/></text>
       <text x="376" y="214" fill="#E6EDF3" opacity="0">Work email: <tspan fill="#3FB68B">you@company.com</tspan>   name: <tspan fill="#3FB68B">You</tspan><animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.2625;0.98" dur="16s" repeatCount="indefinite"/></text>
-      <text x="376" y="232" fill="#E6EDF3" opacity="0">Revenue UNDER USD $100,000? [Y/n]: <tspan fill="#3FB68B">Y</tspan><animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.3625;0.98" dur="16s" repeatCount="indefinite"/></text>
+      <text x="376" y="232" fill="#E6EDF3" opacity="0">Revenue UNDER CAD $100,000? [Y/n]: <tspan fill="#3FB68B">Y</tspan><animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.3625;0.98" dur="16s" repeatCount="indefinite"/></text>
       <text x="376" y="256" fill="#E6EDF3" opacity="0"><tspan fill="#3FB68B">OK</tspan> registered · license -&gt; ~\.ask\license.json<animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.4375;0.98" dur="16s" repeatCount="indefinite"/></text>
       <text x="376" y="280" fill="url(#gold)" opacity="0">* Step 2  Installing the binary<animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.4875;0.98" dur="16s" repeatCount="indefinite"/></text>
       <text x="376" y="298" fill="#9BA3AE" opacity="0">downloading ask-token-optimizer-windows-x86_64.exe …<animate attributeName="opacity" calcMode="discrete" values="0;1;0" keyTimes="0;0.4875;0.98" dur="16s" repeatCount="indefinite"/></text>
@@ -91,5 +91,5 @@
     </g>
   </g>
 
-  <text x="450" y="504" text-anchor="middle" fill="#6B7280" font-size="11">real flow, real prompts — captured from a live Windows install of v0.5.2</text>
+  <text x="450" y="504" text-anchor="middle" fill="#6B7280" font-size="11">real flow, real prompts — captured from a live Windows install</text>
 </svg>
