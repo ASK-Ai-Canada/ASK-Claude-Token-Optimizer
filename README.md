@@ -92,6 +92,11 @@ ask --version
 ask audit          # your cumulative savings
 ```
 
+<div align="center">
+<img src="assets/install-flow.svg" alt="Windows install flow — accept the license, register, auto-install, verified" width="900"/>
+</div>
+
+
 **Prefer your agent to install it?** Hand Claude Code, Cursor, or Cline the machine-readable guide — it audits your environment and wires everything, asking before it changes anything:
 
 ```text
