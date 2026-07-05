@@ -4,6 +4,11 @@ What's improved, version by version. Check the version you're on with `ask --ver
 
 ---
 
+## 0.5.4 — 2026-07-05
+- **Every install counts now.** Installs that skip the installer (Homebrew, direct binary download) register themselves on first run using your existing git/email identity — so your free license is set up without a separate step. Zero prompts, never interrupts a session.
+- **Attach or fix your license any time** — `ask register you@company.com`.
+- **Homebrew tap is live** — `brew install ASK-Ai-Canada/tap/ask-token-optimizer` (macOS + Linux), checksum-pinned to the official release.
+
 ## 0.5.3 — 2026-07-05
 - **Hands-free installs on Windows.** `install.ps1 -AcceptLicense -Email you@co -NonInteractive` completes with zero prompts — built for agents and CI. Re-running the installer on an already-registered machine skips re-registration, so upgrades never re-interview you.
 - **Git Bash fixed for real.** The `ask` command is now an MSYS-safe entry, so complex `ask ssh …` one-liners no longer break on `C:\Program Files` path conversion.
