@@ -4,6 +4,14 @@ What's improved, version by version. Check the version you're on with `ask --ver
 
 ---
 
+## 0.5.3 — 2026-07-05
+- **Hands-free installs on Windows.** `install.ps1 -AcceptLicense -Email you@co -NonInteractive` completes with zero prompts — built for agents and CI. Re-running the installer on an already-registered machine skips re-registration, so upgrades never re-interview you.
+- **Git Bash fixed for real.** The `ask` command is now an MSYS-safe entry, so complex `ask ssh …` one-liners no longer break on `C:\Program Files` path conversion.
+- **Accurate update checks on Windows.** `ask update --check` reports hook status correctly now (and no longer lists Linux-only hooks as missing).
+- **Docs that open natively on Windows.** The installer saves plain-text copies (`INSTALL-WINDOWS.txt`, `README.txt`) under `~\.ask\docs` and points you there.
+- **Community give-back on Windows too.** The optional, tax-deductible ACATI Foundation donation now appears across all installers — 100% goes to the Foundation.
+- **Says what it does.** The tagline is now "token filtering for Claude Code", and the free-tier threshold is now CAD $100,000/year revenue.
+
 ## 0.5.2 — 2026-07-04
 - **Install with Homebrew.** `brew install ASK-Ai-Canada/tap/ask-token-optimizer` on macOS and Linux — and on macOS it installs with no Gatekeeper warning.
 - **Runs on Alpine and every Linux distro now.** New static builds work on musl systems (Alpine, minimal containers) as well as glibc (Debian, Ubuntu, Fedora, Arch); the installer picks the right one for you.
